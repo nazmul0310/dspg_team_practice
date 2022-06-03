@@ -46,7 +46,7 @@ plot(lifeExp ~ year, data=gapminder, main="Rachel's Graph")
 ```
 
 
-```{r John's Chunk}
+```{r John\'s Chunk}
 hist(mtcars$mpg, main = "John's Graph")
 
 
