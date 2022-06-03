@@ -3,6 +3,8 @@ title: "RMD_for_team_oractice"
 author: "Huda"
 date: '2022-06-03'
 output: html_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
@@ -28,10 +30,50 @@ plot(pressure)
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
 ```{r christopher} 
 library(gapminder)
 library(ggplot2)
 library(dplyr)
 gapminder %>% filter(year==1992) %>% ggplot(aes(x=lifeExp)) + geom_histogram() + ggtitle("Life Expectancy in the Year 1992")
 ```
+
+```{r Rachel chunk}
+library(gapminder) 
+library(ggplot2)
+gap <- gapminder
+plot(lifeExp ~ year, data=gapminder, main="Rachel's Graph")
+```
+
+
+```{r John's Chunk}
+hist(mtcars$mpg, main = "John's Graph")
+
+
+# Map data
+library(gapminder)
+library(ggplot2)
+library(dplyr)
+library(raster)
+library(rgdal)
+DSM_HARV <- raster("data/HARV_dsmCrop.tif")
+summary(DSM_HARV)
+
+#dsmCrop
+DSM_HARV_df <- as.data.frame(DSM_HARV, xy=TRUE)
+ggplot() + geom_raster(data = DSM_HARV_df, aes(x = x, y = y, fill = HARV_dsmCrop)) + 
+  scale_fill_viridis_c() + ggtitle("John's Graph") + 
+  coord_quickmap()
+
+#rgb
+Ortho_wNA <- raster("data/HARV_Ortho_wNA.tif")
+Ortho_wNa_df <- as.data.frame(Ortho_wNA, xy=TRUE)
+
+ggplot() + geom_raster(data = Ortho_wNa_df, aes(x = x, y = y, fill = HARV_Ortho_wNA)) + 
+  scale_fill_viridis_c() + ggtitle("John's Graph") + 
+  coord_quickmap()
+```
+Using our two data files, I used them to create rasters, which I then converted to data frames so that `geom_raster` would work better on them. I titled both graphs as "John's Graph" as a title to clarify.
+
+
 
