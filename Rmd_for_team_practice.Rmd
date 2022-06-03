@@ -31,6 +31,13 @@ plot(pressure)
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 
+```{r christopher} 
+library(gapminder)
+library(ggplot2)
+library(dplyr)
+gapminder %>% filter(year==1992) %>% ggplot(aes(x=lifeExp)) + geom_histogram() + ggtitle("Life Expectancy in the Year 1992")
+```
+
 ```{r Rachel chunk}
 library(gapminder) 
 library(ggplot2)
@@ -67,3 +74,9 @@ ggplot() + geom_raster(data = Ortho_wNa_df, aes(x = x, y = y, fill = HARV_Ortho_
 ```
 
 Using our two data files, I used them to create rasters, which I then converted to data frames so that `geom_raster` would work better on them. I titled both graphs as "John's Graph" as a title to clarify.
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> 1d99c60e575f894f3f0fbb351bc938617979c3aa
