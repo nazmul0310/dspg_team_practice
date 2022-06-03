@@ -38,7 +38,6 @@ gap <- gapminder
 plot(lifeExp ~ year, data=gapminder, main="Rachel's Graph")
 ```
 
-
 ```{r John's Chunk}
 hist(mtcars$mpg, main = "John's Graph")
 
@@ -66,6 +65,5 @@ ggplot() + geom_raster(data = Ortho_wNa_df, aes(x = x, y = y, fill = HARV_Ortho_
   scale_fill_viridis_c() + ggtitle("John's Graph") + 
   coord_quickmap()
 ```
+
 Using our two data files, I used them to create rasters, which I then converted to data frames so that `geom_raster` would work better on them. I titled both graphs as "John's Graph" as a title to clarify.
-
-
