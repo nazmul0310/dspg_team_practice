@@ -45,7 +45,12 @@ gap <- gapminder
 plot(lifeExp ~ year, data=gapminder, main="Rachel's Graph")
 ```
 
+<<<<<<< HEAD
+
+```{r John\'s Chunk}
+=======
 ```{r John's Chunk}
+>>>>>>> 48cebedd50268895ab03eb4ffaa09b9d477a2e4a
 hist(mtcars$mpg, main = "John's Graph")
 
 
