@@ -4,7 +4,7 @@ author: "Huda"
 date: '2022-06-03'
 output: html_document
 editor_options: 
-  chunk_output_type: console
+  chunk_output_type: inline
 ---
 
 ```{r setup, include=FALSE}
@@ -31,9 +31,8 @@ plot(pressure)
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 
-```{r John's Chunk}
+```{r Johns Chunk}
 hist(mtcars$mpg, main = "John's Graph")
-
 
 # Map data
 library(gapminder)
@@ -55,8 +54,15 @@ Ortho_wNA <- raster("data/HARV_Ortho_wNA.tif")
 Ortho_wNa_df <- as.data.frame(Ortho_wNA, xy=TRUE)
 
 ggplot() + geom_raster(data = Ortho_wNa_df, aes(x = x, y = y, fill = HARV_Ortho_wNA)) + 
-  scale_fill_viridis_c() + ggtitle("John's Graph") + 
+  ggtitle("John's Graph") + 
   coord_quickmap()
 ```
+
 Using our two data files, I used them to create rasters, which I then converted to data frames so that `geom_raster` would work better on them. I titled both graphs as "John's Graph" as a title to clarify.
+
+```{r}
+#making stack
+HARV_Ortho_stack <- brick("data/HARV_Ortho_wNA.tif")
+plotRGB(HARV_Ortho_stack, main = "title")
+```
 
