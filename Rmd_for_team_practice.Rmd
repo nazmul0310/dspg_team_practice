@@ -74,9 +74,7 @@ ggplot() + geom_raster(data = Ortho_wNa_df, aes(x = x, y = y, fill = HARV_Ortho_
 ```
 
 Using our two data files, I used them to create rasters, which I then converted to data frames so that `geom_raster` would work better on them. I titled both graphs as "John's Graph" as a title to clarify.
-<<<<<<< HEAD
-=======
 
 
 
->>>>>>> 1d99c60e575f894f3f0fbb351bc938617979c3aa
+
