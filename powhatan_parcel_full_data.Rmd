@@ -1,0 +1,57 @@
+---
+title: "powhatan_parcel_full"
+author: "RI"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(dplyr)
+```
+
+```{r reading in the data}
+parcel_data <- read.csv("data/Parc_point_2012_2021.csv")
+View(parcel_data)
+```
+
+```{r}
+subset_parcel <- parcel_data %>%
+  select(MLUSE, MTOTLD, MTOTPR, Area_ACRE, DATA_YEAR, GPIN_12, MLUSE_12, MTOTLD_12, MTOTPR_12, Area_ACRE1, DATA_YEAR1) %>%
+  
+  mutate(MLUSE = factor(MLUSE), DATA_YEAR = factor(DATA_YEAR)) %>%
+  replace(is.na(.), 0)
+```
+
+```{r}
+year_freq <- as.data.frame(table(subset_parcel$DATA_YEAR))
+
+ggplot(year_freq, aes(x= Var1, y= Freq, fill = Var1)) + geom_bar(stat="identity") +
+  ggtitle("Frequency of parcellation") + xlab("Year") + ylab("Frequency") + scale_fill_viridis_d()
+
+# maybe we can divide bars up by land use
+```
+
+```{r}
+ggplot(subset_parcel, aes(x= log(Area_ACRE), y= log(MTOTLD), color = MLUSE)) + geom_point() + labs(title ="Land value VS Acreage per land use", x="Area in acres (log)", y="Land value (log)")
+
+#Area_ACRE variable created from original data
+```
+```{r}
+ggplot(subset_parcel, aes(x= log(MTOTLD), y= log(MTOTPR), color = MLUSE)) + geom_point() + labs(title ="Property value VS land value per land use", x="Land value (log)", y="Property value (log)")
+```
+```{r}
+LU_year_freq <- subset_parcel %>%
+  group_by(DATA_YEAR, MLUSE) %>% summarize(acres = sum(Area_ACRE)) %>%
+  filter(!is.na(MLUSE))
+```
+```{r}
+ggplot(LU_year_freq, aes(x= DATA_YEAR, y= acres, fill=MLUSE)) + geom_bar(stat="identity") +
+  ggtitle("Acres per land use") + xlab("Year") + ylab("Acres") + scale_fill_viridis_d()
+```
+```{r}
+ggplot(subset_parcel, aes(x= DATA_YEAR, y= MTOTLD, fill=MLUSE)) + geom_bar(stat="identity") +
+  ggtitle("Land value per land use") + xlab("Year") + ylab("Land value") + scale_fill_viridis_d()
+```
+
