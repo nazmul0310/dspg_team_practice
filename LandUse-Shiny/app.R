@@ -20,6 +20,12 @@ library(ggplot2)
 library(plotly)
 library(rsconnect)
 
+# data --------------------------------------------------------------------------------------------------------------------
+
+# powhatan parcel data
+
+pow_parcel_data <- 
+
 ui <- navbarPage(title = "DSPG 2022",
                  selected = "overview",
                  theme = shinytheme("lumen"),
@@ -102,7 +108,22 @@ ui <- navbarPage(title = "DSPG 2022",
                                                        Goochland Country also has a huge summer program with plenty of activates. The activates are located all over the county at different facilities 
                                                        including the skate park, gymnasium, the baseball fields, weight room, trails, and many more. "),
                                                      
-                                                     p(" **add more?** " ),
+                                                     h4(strong("Summary Statistics")),
+                                                     p("Goochland County’s population is 23,472 people, which is split between 49.8% male (11,698), and 50.2% female (11,774). [Link] 23,524 identify as one 
+                                                       race, where 19,302 are white, 3,267 are African American, 75 American Indian and Alaska Native, 494 Asian, 3 Native Hawaiian and Other Pacific Islander, 
+                                                       and 383 are some other race.[Link]" ),
+                                                     p("57.9% of the population within Goochland County is employed. The unemployment rate is 3.7% [Link"),
+                                                     p("There are 11,001 civilian employed population, 418 are employed under agriculture, forestry, fishing and hunting, and mining. [Link]"),
+                                                     p("There are a total of 8,711 households in Goochland County. The median income is $97,146 with a margin of error of around 8,582. Around 24.1% of the 6,600 
+                                                       family have one earner, while 46.1% have two earners. [Link] The greatest proportion (20.5%) of earners in Goochland earn between $100,000 to $149,999. 18.4% 
+                                                       of earners in Goochland earn $200,000 plus. [Link]"),
+                                                     p("Nearly 93.1% of the population 25 and over have graduate high school and gone to further their academic career. The highest level of education, a graduate or 
+                                                       professional degree has been attained by around 3,531 people, or 20.1% of the population over 25 years old. [Link]"),
+                                                     p("There were 355 farms with an average farm size of 160. This makes the total land coverage of farms to be 56,739 acres. $ 11,740,000 was generated from products 
+                                                       sold to market. 46% of farms sold less than $2,500, and 3% of farms sold between over $100,000. Grains, oilseeds, dry beans, and dry peas were the main crop that 
+                                                       was sold ($2,846,000) and Milk from cows were the main Livestock, poultry, and products sold ($4,936,000). [Link]"),
+                                                     p("1.0% of Goochland’s population moved within the county, 8.4% moved into the county from a different county in VA, .7% moved from a completely different state, .3% 
+                                                       moved from abroad. [Link]"),
                                               ) ,
                                               column(8, 
                                                      h4(strong("Sociodemographics")),
@@ -135,6 +156,19 @@ ui <- navbarPage(title = "DSPG 2022",
                                                      p("The total population is 29,253 people, split between 51% male (15,188), and 49% female (14,065). [Link] 28,762 identify as one race, where 25,732 are white, 2,505 are African 
                                                        American, 64 American Indian and Alaska Native, 169 Asian, 24 Native Hawaiian and Other Pacific Islander, and 268 are some other race.[Link]."),
                                                      p("24,715 or 57.3% of the population within Powhatan County is employed, along with an unemployment rate of 1.4%."),
+                                                     p("Of the 13,938 civilian employed population, there are very few that are employed in agriculture, forestry, fishing, hunting, and mining. Around .94% of the civilian employed 
+                                                       population fall under that category. Of that .94% of the workers, around half of them serve roles in management, business, science, and art occupations while 14.5% of that 
+                                                       population work in natural resources, construction, and maintenance occupations. [Link]"),
+                                                     p("There were 263 farms with an average farm size of 132. This makes the total land coverage of farms to be 34,585 acres. $11,249,000 was generated from products sold to market. 
+                                                       54% of farms sold less than $2,500, and 13% of farms sold between $25,000 and $24,999. Grains, oilseeds, dry beans, and dry peas were the main crop that was sold ($2,542,000) 
+                                                       and poultry and eggs were the main Livestock, poultry, and products sold ($6,056,000). [Link]"),
+                                                     p("Of the 10,392 households, the median income is $93,833 with a margin of error of around 5,342. Around 30.2% of the 8,220 family have one earner, while 44.8% have two earners. [Link] 
+                                                       The greatest proportion (23.4%) of earners in Powhatan earn between $100,000 to $149,999. [Link]"),
+                                                     p("Nearly 89.6% of the population 25 and over have graduate high school and gone to further their academic career. The highest level of education, a graduate or professional degree has 
+                                                       been attained by around 2,032 people, or 9.3% of the population over 25 years old. [Link]"),
+                                                     p("1.9% of Powhatan’s population moved within the county, 7.4% moved into the county from a different county in VA, .8% moved from a completely different state, .1% moved from abroad. [Link]"),
+                                                     p("As of the 2020, For both the male and female population, the highest proportion of the population are ages 55-59 making up 8.63% of the population, while the smallest percent of the population 
+                                                       make up the senior citizens that are 85 years and older, which is 1.35% of the population. [Link]"),
                                               ) ,
                                               column(8, 
                                                      h4(strong("Sociodemographics")),
@@ -190,10 +224,13 @@ ui <- navbarPage(title = "DSPG 2022",
                                                      flooding (source). Funds are distributed in two phases, to aid livestock producers impacted by natural disasters. The USDA announced in May of 2022 that 
                                                        “commodity and specialty crop producers impacted by natural disaster events in 2020 and 2021 will soon begin receiving emergency relief payments totaling 
                                                        approximately $6 billion through the Farm Service Agency’s (FSA) new Emergency Relief Program (ERP) to offset crop yield and value losses” (source)."),
-                                                     br(),
-                                                     h4(strong("Table of Common Recommendations for Water Quality")), 
-                                                     withSpinner(tableOutput("qualityRec")),
-                                                     p(tags$small("Data Sources listed below")),
+                                                     p(),
+                                                     p(),
+                                                     h4("References:"),
+                                                     p(tags$small("[1] How Can You Help Protect Source Water? (n.d.). Retrieved July 29, 2021, from https://www.epa.gov/sourcewaterprotection/how-can-you-help-protect-source-water")), 
+                                                     p(tags$small("[2] Well maintenance. (2009, April 10). Retrieved July 29, 2021, from https://www.cdc.gov/healthywater/drinking/private/wells/maintenance.html#:~:text=Wells%20should%20be%20checked%20and,example%2C%20arsenic%20and%20radon).")) ,
+                                                     p(tags$small("[3] A Guide to Private Wells (pp. 5-25, Publication). (1995). Blacksburg, VA: Virginia Water Resources Research Center.")) ,
+                                                     p("", style = "padding-top:10px;"),
                                                      
                                                      
                                               ) , 
@@ -221,54 +258,54 @@ ui <- navbarPage(title = "DSPG 2022",
                                                        to farmers. They serve as a safety net from drops in crop revenues and prices."),
                                      )), 
                                      tabPanel("State",
-                                              fluidRow(style = "margin: 6px;",
-                                                       p("", style = "padding-top:10px;"),
-                                                       h5("Since one of our team members were local to Floyd County, he picked up a FREE well water testing kit from a local store in order to see how easy the process of testing their water is. 
-                                                     Once he got home, he opened up the kit and here are photos of what the kit contains. We would like to make very apparent that the county hands these out for FREE at most local stores in order to 
-                                                     keep their residents safe. Once the instructions are followed on how to take a water sample and put into the vial, the kit comes with an envelope already addressed where the vial will go. 
-                                                     Since the county is looking to increasing their testing, the envelope does not need a stamp and costs nothing to mail other than putting it into a mailbox or getting dropped off at the post office. 
-                                                     Note there is a survey that needs to be filled out of personal information in order to get the results back to the correct person but all of this information is confidental. 
-                                                     The stakeholders mentioned many did not want their address or coordinates or information to be public record and they have ensured us the coordinates, location and results of these well water testing kits do 
-                                                     not get shared with anyone besides those who are testing it. Once the survey is filled out and sealed into the envelope with the vial, the last step is sending it off. The results may take
-                                                     up to a week to get back. This is a huge step towards cleaner, safer water in the county because the problem cannot be fixed if we do not know what we are working with. "), 
-                                                       tags$br(),
-                                                       tags$br(), 
-                                                       column(4, 
-                                                              p("1. Here are pictures of what the kit looks like. All of the kits are ", strong("handed out FREE by the county. ")), 
-                                                              img(src = "front-page.jpeg", style="display: block; margin-left: auto; margin-right: auto;", width = "300px")
-                                                       ), 
-                                                       column(4,
-                                                              p("2. Once you open the kit, you'll see a clear vial where you want to put the water sample in
-                                                  and an envelope. "), 
-                                                              img(src = "front-page-2.jpeg", style="display: block; margin-left: auto; margin-right: auto;", width = "300px")
-                                                       ), 
-                                                       
-                                                       column(4, 
-                                                              p("3. Third, you will see a styrofoam square with a cutoff where you will put your vial filled with water. The styrofoam is there to ensure your sample gets
-                                                  to the lab safely."),
-                                                              img(src = "styrofoam.jpeg", style = "display: inline; border: 1px solid #C0C0C0;", width = "300px")
-                                                       ) 
-                                              ),
-                                              fluidRow(style = "margin: 6px;",
-                                                       p("", style = "padding-top:10px;"),
-                                                       column(4, 
-                                                              p("4. Here are the instructions to follow when getting your water for the vial. This process only takes a couple of minutes and again, it is so simple that even your kids
-                                                    could follow along and get invovled. "), 
-                                                              img(src = "instructions.jpeg", style="display: block; margin-left: auto; margin-right: auto;", width = "300px")
-                                                       ), 
-                                                       column(4,
-                                                              p("5. In order to get the results back, you will need to fill out this survey that includes why you're getting your water tested, address, name, etc. No information
-                                                  is shared publicly about your water sources. "), 
-                                                              img(src = "survey.jpeg", style="display: block; margin-left: auto; margin-right: auto;", width = "300px"),
-                                                       ), 
-                                                       
-                                                       column(4, 
-                                                              p("6. Here is the front of the envelope and provided address you will send it to once it goes into the mail. ", strong("Notice there is no need for a stamp. "), "All you need to do 
-                                                  is seal the envelope and drop it in your mail box or nearest post office. "), 
-                                                              img(src = "address.jpeg", style = "display: inline; border: 1px solid #C0C0C0;", width = "300px")
-                                                       ) 
-                                                       
-                                                       
+                                              p(),
+                                              p('State level officials work within the confines of both federal and local policy. They aim to simultaneously enhance federal policy, while enabling local officials to make comprehensive 
+                                              land-use plans. The state of Virginia is under the Dillon Rule which states that local ordinances must be consistent with state law (source). Local officials are the ones approving parcel-specific 
+                                              land use plans, but state and federal officials play a key role (source). “The state courts are the "referees" to determine if land use decisions violated some aspect of various state laws, or if 
+                                                the land use rules violated the state constitution in some way (source).'),
+                                              column(6, 
+                                                     p("", style = "padding-top:10px;"),
+                                                     p(strong("Conservation Reserve Enhancement program (CREP):")), 
+                                                     p("This is a state sponsored enhancement to the federal CRP. It is a cost-share program where federal reimbursement are made through the FSA for up to 
+                                                       “50% of a participant's eligible expenses for implementing best management practices (BMP)”. BMP examples include adding fencing, alternative watering 
+                                                       systems, and restoring wetlands. Participation in this program is voluntary, and the contract period is around 10-15 years (source)."),
+                                                     br(),
+                                                     p(strong("Agriculture and Forestal Districts (AFD):")),
+                                                     p("The AFD program in Virginia was designed to “preserve and protect open spaces, forested areas, and agricultural lands” (source). This program makes 
+                                                       it so land taxes are based on use rather than taxing solely on the market value. Land used for growing crops, for example, is taxed differently than 
+                                                       developed property. This state level policy encourages localities to be purposeful with their property taxes. The hope is that this policy will be used 
+                                                       to conserve and protect agricultural and forest land. These lands can be valued as “natural and ecological resources which provide essential open spaces 
+                                                       for clean air sheds, watershed protection, wildlife habitat, aesthetic quality and other environmental purposes” (source). This program was formed in 1977 
+                                                       (source). The potential benefits are to lower property taxes, safeguard the rural character of the community, and offer protection from eminent domain (source)."),
+                                                     br(),
+                                                     p(strong("Nonpoint Source (NPS) Pollution Management Program:")), 
+                                                     p("This is a diverse network of state and local government programs that . Collectively, these programs “help to prevent water quality degradation and to restore 
+                                                       the health of lakes, rivers, streams and estuaries by promoting and funding state and local watershed planning efforts, stream and wetland restoration and protection, 
+                                                       education and outreach, and other measures to reduce and prevent NPS pollution from affecting the Commonwealth’s waters” (source)."),
+                                                     p(),
+                                                     p(),
+                                                     h4("References:"),
+                                                     p(tags$small("[1] How Can You Help Protect Source Water? (n.d.). Retrieved July 29, 2021, from https://www.epa.gov/sourcewaterprotection/how-can-you-help-protect-source-water")), 
+                                                     p(tags$small("[2] Well maintenance. (2009, April 10). Retrieved July 29, 2021, from https://www.cdc.gov/healthywater/drinking/private/wells/maintenance.html#:~:text=Wells%20should%20be%20checked%20and,example%2C%20arsenic%20and%20radon).")) ,
+                                                     p(tags$small("[3] A Guide to Private Wells (pp. 5-25, Publication). (1995). Blacksburg, VA: Virginia Water Resources Research Center.")) ,
+                                                     p("", style = "padding-top:10px;"),
+                                                     
+                                                     
+                                              ) , 
+                                              column(6, 
+                                                     p("", style = "padding-top:10px;"),
+                                                     p(strong("Chesapeake Bay Preservation Act:")),
+                                                     p("This program was developed in 1988 as an element of Virginia's NPS management program. The goal is to protect and improve water quality in the Chesapeake 
+                                                     Bay by requiring effective land use management practices (source)."), 
+                                                     p('"The Bay Act program is the only program administered by the Commonwealth of Virginia that comprehensively addresses the effects of land use planning and 
+                                                     development on water quality. The Bay Act recognizes that local governments have the primary responsibility for land use decisions and expands their authority 
+                                                     to manage water quality, and establish a direct relationship between water quality protection and local land use decision-making" (source).'),
+                                                     br(),
+                                                     p(strong("Total Maximum Daily Load (TMDL):")),
+                                                     p("Significant portions of the Chesapeake Bay have been identified as not meeting water quality standards. Despite the Chesapeake Bay program, water quality goals 
+                                                     have not been met. In December of 2010, the EPA issued a TMDL, a “pollution diet” to protect the Bay (source). This TMDL is divided among all the Bay states. However,
+                                                       “regional or statewide consistency is rare in Virginia's land use planning process - even statewide requirements such as the Chesapeake Bay Regulations are interpreted 
+                                                       differently by different jurisdictions” (source)."),
                                               )) ,
                                      tabPanel("County",
                                               p(),
@@ -328,149 +365,131 @@ ui <- navbarPage(title = "DSPG 2022",
                  ## Tab Introduction--------------------------------------------
                  tabPanel("Variables??", value = "conclusion", 
                           fluidRow(style = "margin: 6px;",
-                                   h1(strong("Factors to Consider"), align = "center"),
+                                   
                                    p("", style = "padding-top:10px;"),
                                    tabsetPanel(
                                      tabPanel("Land Use",
-                                              column(6, 
-                                                     p("", style = "padding-top:10px;"),
+                                              h1(strong("Land Use Data"), align = "center"),
+                                              p("", style = "padding-top:10px;"),
+                                              column(4, 
+                                                     h4(strong("Land Use in Goochland and Powhatan Counties")),
+                                                     p("As residential and commercial businesses have grown in the past ten years in Floyd, there continues to be a different demographic of the new movers
+                                       into the county. The new residents share a household income that is significantly higher than those traditionally residing in Floyd 
+                                       for the past ten years, and their home values have almost doubled. Due to the recent pandemic, there was a push to move to rural areas and work
+                                       from home, resulting in home values increasing in the past two years. Many new residents are moving into Floyd for its land features, natural 
+                                       beauty, and vibrant culture of music, arts, local foods and wines, and outdoor recreation. However, these same residents work outside the county
+                                       and contribute less to the county's economy. This trend is evident when observing commuting data for Floyd County from the Virginia Employment 
+                                       Commission [6]. Floyd has roughly 60% of employees that live in Floyd, but commute out of the county for their job, only 15%, in contrast,
+                                       that commute into the county for work, leaving the remaining 25% of people who both work and live in the county [5]. ")
+                                              ), 
+                                              column(8, 
+                                                     h4(strong("Graphs of Land Use Distributions and Changes")),
+                                                     selectInput("econ1", "Select Variable:", width = "100%", choices = c(
+                                                       "Employment by Industry [1]" = "industry",
+                                                       "Projected Population Change [2]" = "pop",
+                                                       "Income per Capita [3]" = "capita", 
+                                                       "Population by Age [4]" = "age", 
+                                                       "Number of Commuters [5]" = "commute", 
+                                                       "New Business Growth [6]" = "business",
+                                                       "Retail Sales by Type [7]" = "retail",
+                                                       "Unemployment Rate Timeseries [8]" = "unemplo")
+                                                     ),
+                                                     plotlyOutput("trend1", height = "600px")
                                                      
-                                                                                                          h4(strong("Table of Common Recommendations for Water Quality")), 
-                                                     withSpinner(tableOutput("qualityRec")),
-                                                     p(tags$small("Data Sources listed below")),
+                                              ),
+                                              column(12, 
                                                      
-                                                     
-                                              ) , 
-                                              column(6, 
-                                                     p("", style = "padding-top:10px;"),
-                                                     p("The most common contaminants found in drinking water surrounding the New Rivery Valley Area 
-                                                 included total coliform bacteria, low levels of pH, sodium and chloride, lead and copper and manganese [2]. "),
-                                                     br(), 
-                                                     tags$li("Disinfect", strong(" total coliform bacteria, "), "the Virginia Department of Health recommends the use of Shock Chlorination to clean and sanitize
-                                                  the well and entire plumbing system [7]"), 
-                                                     tags$li("Combatting", strong("manganese: "), " it is recomended to get a distillation or filtration system because it is secondary maximum contaminant level, maximum 0.05 mg/L [3]"),
-                                                     tags$li("Raising ", strong("low pH levels (<7):"), " is installing an acid neutralizing filter that passes through calcite that raises the pH [4]"),
-                                                     tags$li("Protecting water from ", strong("lead and copper: "), "leeching into the water, regularly clean your faucet’s screen (also known as an aerator). Sediment, debris, and lead particles can collect in your aerator. 
-                                                     Make sure to run your water for at least a minute and use only cold water. If not hot water, use cold and boil on stove. [5]"),
-                                                     tags$li("For eliminating ", strong("chloride and sodium: "), " activated carbon filters are the most common devices used to dechlorinate
-                                                water, remove objectionable chlorine tastes, and reduce corrosion of plumbing systems [6]"),
-                                                     tags$li("Dealing with", strong("hard water: "), " use water softeners which exchange the minerals (iron, magnesium, and calcium) for sodium. To avoid potential risks, one could
-                                                     only soften the the hot water supply to take showers and baths and clean around the house and leave the cold water available for consumption. [6]"),
-                                                     tags$li("To condition well water for ", strong("safer and cleaner water: "), " many use water softening, iron removal, neutralization of acid water, reverse
-                                                osmosis, turbidity control, removal of objectionable tastes and odors, and aeration [7]"),
-                                                     tags$li("The issue with ", strong("water softeners ,"), " when used in conjuction with filters causes the water to smell rotten. Also, the addition of sodium into the water
-                                                     can be a health risk and should talk to their physican. [6]"),
-                                                     br(), 
-                                                     p("Protecting water from", strong("agricultural runoff"), "like sediments, animal feeding operations, livestock grazing, irrigation and pesticides can include measures like",  
-                                                       strong("applying management practices that control the volume and flow rate"),  "of runoff water, keep the soil in place, and reduce soil transport;", 
-                                                       strong("adjusting grazing intensity, keeping livestock out of sensitive areas,"), " providing alternative sources of water and shade, and promoting revegetation of ranges, pastures, and riparian zones; ", strong("applying only the amount of water required for crops,"), " 
-                                                  converting irrigation systems to higher efficiency equipment; and following ", strong("Integrated Pest Management Technology"), "to use natural barriers and limit pesticide uses [1]. "), 
-                                                     p("Creating ", strong("new green infrastructure, replacing the polluting mining, and manufacturing industries,"), " will not only create new sustainable jobs but reduce the pollution going into the groundwater."), 
-                                                     br()),
-                                              h4("References: ", algin = "ceneter"),
-                                              p(tags$small("[1] Protecting Water Quality from Agricultural Runoff [PDF]. (2005, March). Washington, DC: United States Environmental Protection Agency.")), 
-                                              p(tags$small("[2] V. (n.d.). Evaluation of Household Water Quality in Floyd County, Virginia APRIL 2010 (pp. 1-6, Rep.). Virginia Polytechnic Institute and State University. doi:Virginia Cooperative Extension")),
-                                              p(tags$small("[3] Learn about water. (n.d.). Retrieved July 26, 2021, from https://www.wqa.org/learn-about-water/water-q-a/manganese")),
-                                              p(tags$small("[4] University of Massachusetts Amherst. (2018, March 22). Ph – acidity of private drinking water wells. Retrieved July 26, 2021, from https://ag.umass.edu/cafe/fact-sheets/ph-acidity-of-private-drinking-water-wells")), 
-                                              p(tags$small("[5] General Information about Lead in Drinking Water. (n.d.). Retrieved July 26, 2021, from https://www.epa.gov/ground-water-and-drinking-water/basic-information-about-lead-drinking-water#reducehome")), 
-                                              p(tags$small("[6] Benham, B., Ling, E. J., Scott, J. P., Haering, K., &amp; Wright, B. (2011). Virginia Household Water Quality Program: Sodium and Chloride in Household Drinking Water (pp. 1-4, Publication No. 442-661). Communications and Marketing, College of Agriculture and Life Sciences, Virginia Polytechnic Institute and State University.")),
-                                              p(tags$small("[7] A Guide to Private Wells (pp. 5-25, Publication). (1995). Blacksburg, VA: Virginia Water Resources Research Center.")),
-                                              p("", style = "padding-top:10px;")
+                                                     h4("References") , 
+                                                     p(tags$small("[1] American Community Survey 5-year Estimates 2014/2019")), 
+                                                     p(tags$small("[2] U.S. Census Bureau, Weldon Cooper Center for Public Service")), 
+                                                     p(tags$small("[3] U.S Census Bureau")), 
+                                                     p(tags$small("[4]  2010 Census")), 
+                                                     p(tags$small("[5] U.S. Census Bureau, OnTheMap Application and LEHD Origin-Destination Employment Statistics, 2014")), 
+                                                     p(tags$small("[6] Virginia Employment Commission, Economic Information & Analytics, Quarterly Census of Employment and Wages (QCEW), 4th Quarter (October, November, December) 2020.")), 
+                                                     p(tags$small("[7] American Community Survey 5-year Estimates 2014/2019")), 
+                                                     p(tags$small("[8]  Virginia Employment Commission")) )
                                               
                                      ), 
                                      tabPanel("Crop Layer",
-                                              fluidRow(style = "margin: 6px;",
-                                                       p("", style = "padding-top:10px;"),
-                                                       h5("Since one of our team members were local to Floyd County, he picked up a FREE well water testing kit from a local store in order to see how easy the process of testing their water is. 
-                                                     Once he got home, he opened up the kit and here are photos of what the kit contains. We would like to make very apparent that the county hands these out for FREE at most local stores in order to 
-                                                     keep their residents safe. Once the instructions are followed on how to take a water sample and put into the vial, the kit comes with an envelope already addressed where the vial will go. 
-                                                     Since the county is looking to increasing their testing, the envelope does not need a stamp and costs nothing to mail other than putting it into a mailbox or getting dropped off at the post office. 
-                                                     Note there is a survey that needs to be filled out of personal information in order to get the results back to the correct person but all of this information is confidental. 
-                                                     The stakeholders mentioned many did not want their address or coordinates or information to be public record and they have ensured us the coordinates, location and results of these well water testing kits do 
-                                                     not get shared with anyone besides those who are testing it. Once the survey is filled out and sealed into the envelope with the vial, the last step is sending it off. The results may take
-                                                     up to a week to get back. This is a huge step towards cleaner, safer water in the county because the problem cannot be fixed if we do not know what we are working with. "), 
-                                                       tags$br(),
-                                                       tags$br(), 
-                                                       column(4, 
-                                                              p("1. Here are pictures of what the kit looks like. All of the kits are ", strong("handed out FREE by the county. ")), 
-                                                              img(src = "front-page.jpeg", style="display: block; margin-left: auto; margin-right: auto;", width = "300px")
-                                                       ), 
-                                                       column(4,
-                                                              p("2. Once you open the kit, you'll see a clear vial where you want to put the water sample in
-                                                  and an envelope. "), 
-                                                              img(src = "front-page-2.jpeg", style="display: block; margin-left: auto; margin-right: auto;", width = "300px")
-                                                       ), 
-                                                       
-                                                       column(4, 
-                                                              p("3. Third, you will see a styrofoam square with a cutoff where you will put your vial filled with water. The styrofoam is there to ensure your sample gets
-                                                  to the lab safely."),
-                                                              img(src = "styrofoam.jpeg", style = "display: inline; border: 1px solid #C0C0C0;", width = "300px")
-                                                       ) 
-                                              ),
-                                              fluidRow(style = "margin: 6px;",
-                                                       p("", style = "padding-top:10px;"),
-                                                       column(4, 
-                                                              p("4. Here are the instructions to follow when getting your water for the vial. This process only takes a couple of minutes and again, it is so simple that even your kids
-                                                    could follow along and get invovled. "), 
-                                                              img(src = "instructions.jpeg", style="display: block; margin-left: auto; margin-right: auto;", width = "300px")
-                                                       ), 
-                                                       column(4,
-                                                              p("5. In order to get the results back, you will need to fill out this survey that includes why you're getting your water tested, address, name, etc. No information
-                                                  is shared publicly about your water sources. "), 
-                                                              img(src = "survey.jpeg", style="display: block; margin-left: auto; margin-right: auto;", width = "300px"),
-                                                       ), 
-                                                       
-                                                       column(4, 
-                                                              p("6. Here is the front of the envelope and provided address you will send it to once it goes into the mail. ", strong("Notice there is no need for a stamp. "), "All you need to do 
-                                                  is seal the envelope and drop it in your mail box or nearest post office. "), 
-                                                              img(src = "address.jpeg", style = "display: inline; border: 1px solid #C0C0C0;", width = "300px")
-                                                       ) 
-                                                       
-                                                       
-                                              )) ,
-                                     tabPanel("Traffic Data",
-                                              column(6,
-                                                     h1(strong("Goochland"), align = "center"),
-                                                     p("", style = "padding-top:10px;"),
-                                                     p("Goochland County runs a land use program which assesses land based on use value as opposed to market value. The program was adopted by the county in 1978. There are multiple requirements for land to be eligible for the program as established by the State Land Evaluation Advisory Council:"),
-                                                     tags$ul(
-                                                       
-                                                       tags$li("Land must be in production for sale 5 years prior to entering the program as agriculture or horticulture"),
-                                                       
-                                                       tags$li("Land must be zoned as agricultural"),
-                                                       
-                                                       tags$li("Land must meet minimum acreages for each land use category "),
-                                                       
-                                                       tags$li("All real estate taxes have been paid on parcel "),
-                                                       
+                                              h1(strong("Crop Layer Data"), align = "center"),
+                                              p("", style = "padding-top:10px;"),
+                                              column(4, 
+                                                     h4(strong("Crops Grown in Goochland and Powhatan Counties")),
+                                                     p("As residential and commercial businesses have grown in the past ten years in Floyd, there continues to be a different demographic of the new movers
+                                       into the county. The new residents share a household income that is significantly higher than those traditionally residing in Floyd 
+                                       for the past ten years, and their home values have almost doubled. Due to the recent pandemic, there was a push to move to rural areas and work
+                                       from home, resulting in home values increasing in the past two years. Many new residents are moving into Floyd for its land features, natural 
+                                       beauty, and vibrant culture of music, arts, local foods and wines, and outdoor recreation. However, these same residents work outside the county
+                                       and contribute less to the county's economy. This trend is evident when observing commuting data for Floyd County from the Virginia Employment 
+                                       Commission [6]. Floyd has roughly 60% of employees that live in Floyd, but commute out of the county for their job, only 15%, in contrast,
+                                       that commute into the county for work, leaving the remaining 25% of people who both work and live in the county [5]. ")
+                                              ), 
+                                              column(8, 
+                                                     h4(strong("Crop Layer Visualizations")),
+                                                     selectInput("econ1", "Select Variable:", width = "100%", choices = c(
+                                                       "Employment by Industry [1]" = "industry",
+                                                       "Projected Population Change [2]" = "pop",
+                                                       "Income per Capita [3]" = "capita", 
+                                                       "Population by Age [4]" = "age", 
+                                                       "Number of Commuters [5]" = "commute", 
+                                                       "New Business Growth [6]" = "business",
+                                                       "Retail Sales by Type [7]" = "retail",
+                                                       "Unemployment Rate Timeseries [8]" = "unemplo")
                                                      ),
-                                                     p("There are also multiple land use categories including agriculture, horticulture, and forest use (source)."),
-                                                     p("The main agricultural districts in the county include A1 (General), A2 (Limited), and A3 (Intensive) (source). These districts promote the protection
-                                                     of agricultural land and encourage agribusiness. The Goochland County 2035 Comprehensive Plan includes an agricultural commitment to maintaining approximately
-                                                     85% of the county in the Rural Enhancement Land Use Designation through 2035 (source). The county also supports economic development and tourism through the
-                                                     ACRES initiative which “[Supports] Goochland’s Agricultural Community through Accessibility, Connectivity, Readiness, Education, and Sustainability” (source).
-                                                     The initiative encourages the recognition of Goochland County’s agricultural history and identity and promotes rural economic development/tourism.")),
-                                              column(6,
-                                                     h1(strong("Powhatan"), align = "center"),
-                                                     p("", style = "padding-top:10px;"),
-                                                     p('Powhatan County land use policy includes a land use deferral program, Powhatan County code Section 70-76, which states that the purpose of land use is
-                                                     to “preserve real estate devoted to agricultural, horticultural, forest and open space uses within its boundaries in the public interest....". 
-                                                     The land use deferral program “offers a deferral of a portion of the real estate taxes for qualifying properties”. This ordinance was adopted by the
-                                                     county in 1976 and approximately 40% of the county is in land use today (source). Powhatan County also has an Agricultural and Forestal District (AFD)
-                                                     Program which allows the county, with the landowner’s consent, to take land out of development in exchange for a land use tax rate as opposed to market
-                                                     value tax rate. As of September/October 2020, there are approximately 5640 acres of AFD land. This program serves to protect natural lands as well as prevent
-                                                     landowners from having to sell their land as market values and tax rates continue to increase. One benefit that the AFD program has over the land use deferral
-                                                     program is that it is officially included in the County’s Comprehensive Plan (source). ')),
-                                              p('The county’s zoning ordinance categorizes rural districts into 6 groups. The main agricultural districts are A-20 (min 20 ac), A-10 (min 10 ac), and A-C.
-                                                     The 3 other rural districts are largely dedicated to residential zoning. The 2010 long range comprehensive plan also includes sections on natural conservation
-                                                     and rural preservation which outline land use policies to be “used when addressing development and land use issues” (source). These policies promote the
-                                                     conservation of open land and farmland and recognize agriculture as an economic driver of the community.'),
+                                                     plotlyOutput("trend1", height = "600px")
+                                                     
+                                              ),
                                               column(12, 
-                                                     h4("References:"),
-                                                     p(tags$small("[1] How Can You Help Protect Source Water? (n.d.). Retrieved July 29, 2021, from https://www.epa.gov/sourcewaterprotection/how-can-you-help-protect-source-water")), 
-                                                     p(tags$small("[2] Well maintenance. (2009, April 10). Retrieved July 29, 2021, from https://www.cdc.gov/healthywater/drinking/private/wells/maintenance.html#:~:text=Wells%20should%20be%20checked%20and,example%2C%20arsenic%20and%20radon).")) ,
-                                                     p(tags$small("[3] A Guide to Private Wells (pp. 5-25, Publication). (1995). Blacksburg, VA: Virginia Water Resources Research Center.")) ,
-                                                     p("", style = "padding-top:10px;")) 
+                                                     
+                                                     h4("References") , 
+                                                     p(tags$small("[1] American Community Survey 5-year Estimates 2014/2019")), 
+                                                     p(tags$small("[2] U.S. Census Bureau, Weldon Cooper Center for Public Service")), 
+                                                     p(tags$small("[3] U.S Census Bureau")), 
+                                                     p(tags$small("[4]  2010 Census")), 
+                                                     p(tags$small("[5] U.S. Census Bureau, OnTheMap Application and LEHD Origin-Destination Employment Statistics, 2014")), 
+                                                     p(tags$small("[6] Virginia Employment Commission, Economic Information & Analytics, Quarterly Census of Employment and Wages (QCEW), 4th Quarter (October, November, December) 2020.")), 
+                                                     p(tags$small("[7] American Community Survey 5-year Estimates 2014/2019")), 
+                                                     p(tags$small("[8]  Virginia Employment Commission")) )) ,
+                                     tabPanel("Traffic Data",
+                                              h1(strong("Traffic & Commute Data"), align = "center"),
+                                              p("", style = "padding-top:10px;"),
+                                              column(4, 
+                                                     h4(strong("Traffic in Goochland and Powhatan Counties")),
+                                                     p("As residential and commercial businesses have grown in the past ten years in Floyd, there continues to be a different demographic of the new movers
+                                       into the county. The new residents share a household income that is significantly higher than those traditionally residing in Floyd 
+                                       for the past ten years, and their home values have almost doubled. Due to the recent pandemic, there was a push to move to rural areas and work
+                                       from home, resulting in home values increasing in the past two years. Many new residents are moving into Floyd for its land features, natural 
+                                       beauty, and vibrant culture of music, arts, local foods and wines, and outdoor recreation. However, these same residents work outside the county
+                                       and contribute less to the county's economy. This trend is evident when observing commuting data for Floyd County from the Virginia Employment 
+                                       Commission [6]. Floyd has roughly 60% of employees that live in Floyd, but commute out of the county for their job, only 15%, in contrast,
+                                       that commute into the county for work, leaving the remaining 25% of people who both work and live in the county [5]. ")
+                                              ), 
+                                              column(8, 
+                                                     h4(strong("Traffic Visualizations")),
+                                                     selectInput("econ1", "Select Variable:", width = "100%", choices = c(
+                                                       "Employment by Industry [1]" = "industry",
+                                                       "Projected Population Change [2]" = "pop",
+                                                       "Income per Capita [3]" = "capita", 
+                                                       "Population by Age [4]" = "age", 
+                                                       "Number of Commuters [5]" = "commute", 
+                                                       "New Business Growth [6]" = "business",
+                                                       "Retail Sales by Type [7]" = "retail",
+                                                       "Unemployment Rate Timeseries [8]" = "unemplo")
+                                                     ),
+                                                     plotlyOutput("trend1", height = "600px")
+                                                     
+                                              ),
+                                              column(12, 
+                                                     
+                                                     h4("References") , 
+                                                     p(tags$small("[1] American Community Survey 5-year Estimates 2014/2019")), 
+                                                     p(tags$small("[2] U.S. Census Bureau, Weldon Cooper Center for Public Service")), 
+                                                     p(tags$small("[3] U.S Census Bureau")), 
+                                                     p(tags$small("[4]  2010 Census")), 
+                                                     p(tags$small("[5] U.S. Census Bureau, OnTheMap Application and LEHD Origin-Destination Employment Statistics, 2014")), 
+                                                     p(tags$small("[6] Virginia Employment Commission, Economic Information & Analytics, Quarterly Census of Employment and Wages (QCEW), 4th Quarter (October, November, December) 2020.")), 
+                                                     p(tags$small("[7] American Community Survey 5-year Estimates 2014/2019")), 
+                                                     p(tags$small("[8]  Virginia Employment Commission")) ) 
                                      )
                                    ) 
                           ) 
@@ -599,41 +618,45 @@ ui <- navbarPage(title = "DSPG 2022",
                                           img(src = "farm.jpg", style = "display: inline; border: 1px solid #C0C0C0;", width = "150px"),
                                           img(src = "team-julie.jpg", style = "display: inline; border: 1px solid #C0C0C0;", width = "150px"),
                                           br(), 
-                                          img(src = "team-ryan.jpg", style = "display: inline; border: 1px solid #C0C0C0;", width = "150px"),
-                                          p(a(href = 'https://www.linkedin.com/in/esha-dwibedi-83a63476/', 'Esha Dwibedi', target = '_blank'), "(Virginia Tech, PHD in Economics);",
+                                          img(src = "rachel.jpg", style = "display: inline; border: 1px solid #C0C0C0;", width = "150px"),
+                                          p(a(href = 'https://www.linkedin.com/in/esha-dwibedi-83a63476/', 'John Malla', target = '_blank'), "(Virginia Tech, PHD in Economics);",
                                             br(), 
-                                            a(href = 'https://www.linkedin.com/in/julie-rebstock', 'Julie Rebstock', target = '_blank'), "(Virgina Tech, Undergraduate in Economics and Computational Modeling and Data Analytics);",
+                                            a(href = 'https://www.linkedin.com/in/julie-rebstock', 'Christopher Vest', target = '_blank'), "(Virgina Tech, Undergraduate in Economics and Computational Modeling and Data Analytics);",
                                             br(), 
-                                            a(href = 'https://www.linkedin.com/in/ryan-jacobs-bb5727174/', 'Ryan Jacobs', target = '_blank'), "(Virginia Tech, Undergraduate in Environmental Economics, Management, and Policy, and Minoring in Industrial Design)."),
+                                            a(href = 'www.linkedin.com/in/rachelinman21', 'Rachel Inman', target = '_blank'), "(Virginia Tech, Undergraduate in Smart and Sustainable Cities and Minoring in Landscape Architecture)."),
                                           p("", style = "padding-top:10px;") 
                                    ),
                                    column(6, align = "center",
                                           h4(strong("VT Faculty Members")),
                                           img(src = "team-posadas.jpg", style = "display: inline; margin-right: 5px; border: 1px solid #C0C0C0;", width = "150px"),
                                           img(src = "team-sarah.jpg", style = "display: inline; border: 1px solid #C0C0C0;", width = "150px"),
-                                          p(a(href = "https://www.linkedin.com/in/briannaposadas/", 'Dr. Brianna B. Posadas', target = '_blank'), "(Postdoctoral Associate Department of Agricultural, Leadership, & Community Education);",
+                                          p(a(href = "https://www.linkedin.com/in/briannaposadas/", 'Dr. Susan Chen', target = '_blank'), "(Postdoctoral Associate Department of Agricultural, Leadership, & Community Education);",
                                             br(), 
-                                            a(href = '', 'Dr. Sarah Melissa Witiak', target = '_blank'), "(Associate Professor Department of Biology Virginia State University)."),
+                                            a(href = '', 'Dr. Wei Zhang', target = '_blank'), "(Associate Professor Department of Biology Virginia State University)."),
                                           p("", style = "padding-top:10px;")
                                    )
                           ),
                           fluidRow(style = "margin-left: 100px; margin-right: 100px;",
                                    column(6, align = "center",
                                           h4(strong("DSPG Graduate Fellows")),
-                                          img(src = "team-posadas.jpg", style = "display: inline; margin-right: 5px; border: 1px solid #C0C0C0;", width = "150px"),
-                                          img(src = "team-sarah.jpg", style = "display: inline; border: 1px solid #C0C0C0;", width = "150px"),
-                                          p(a(href = "https://www.linkedin.com/in/briannaposadas/", 'Dr. Brianna B. Posadas', target = '_blank'), "(Postdoctoral Associate Department of Agricultural, Leadership, & Community Education);",
+                                          img(src = "farm.jpg", style = "display: inline; border: 1px solid #C0C0C0;", width = "150px"),
+                                          img(src = "team-julie.jpg", style = "display: inline; border: 1px solid #C0C0C0;", width = "150px"),
+                                          br(), 
+                                          img(src = "---.jpg", style = "display: inline; border: 1px solid #C0C0C0;", width = "150px"),
+                                          p(a(href = 'https://www.linkedin.com/in/esha-dwibedi-83a63476/', 'Nazmul Huda', target = '_blank'), "(Virginia Tech, PHD in Economics);",
                                             br(), 
-                                            a(href = '', 'Dr. Sarah Melissa Witiak', target = '_blank'), "(Associate Professor Department of Biology Virginia State University)."),
+                                            a(href = 'https://www.linkedin.com/in/julie-rebstock', 'Yuanyuan Wen', target = '_blank'), "(Virgina Tech, Undergraduate in Economics and Computational Modeling and Data Analytics);",
+                                            br(), 
+                                            a(href = 'www.linkedin.com/in/rachelinman21', 'Samantha Rippley', target = '_blank'), "(Virginia Tech, Undergraduate in Smart and Sustainable Cities and Minoring in Landscape Architecture)."),
                                           p("", style = "padding-top:10px;") 
                                    ),
                                    column(6, align = "center",
                                           h4(strong("Project Stakeholders")),
                                           img(src = "team-posadas.jpg", style = "display: inline; margin-right: 5px; border: 1px solid #C0C0C0;", width = "150px"),
                                           img(src = "team-sarah.jpg", style = "display: inline; border: 1px solid #C0C0C0;", width = "150px"),
-                                          p(a(href = "https://www.linkedin.com/in/briannaposadas/", 'Dr. Brianna B. Posadas', target = '_blank'), "(Postdoctoral Associate Department of Agricultural, Leadership, & Community Education);",
+                                          p(a(href = "https://www.linkedin.com/in/briannaposadas/", 'Rachel ---', target = '_blank'), "(Postdoctoral Associate Department of Agricultural, Leadership, & Community Education);",
                                             br(), 
-                                            a(href = '', 'Dr. Sarah Melissa Witiak', target = '_blank'), "(Associate Professor Department of Biology Virginia State University)."),
+                                            a(href = '', 'Nichole ---', target = '_blank'), "(Associate Professor Department of Biology Virginia State University)."),
                                           p("", style = "padding-top:10px;")
                           )
                  )) ,
