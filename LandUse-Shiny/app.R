@@ -22,10 +22,12 @@ library(rsconnect)
 
 # data --------------------------------------------------------------------------------------------------------------------
 
-# powhatan parcel data
 
-pow_parcel_data <- 
 
+
+  
+# body --------------------------------------------------------------------------------------------------------------------
+  
 ui <- navbarPage(title = "DSPG 2022",
                  selected = "overview",
                  theme = shinytheme("lumen"),
@@ -105,25 +107,25 @@ ui <- navbarPage(title = "DSPG 2022",
                                                        county in Virginia. The country is known for its fertile land and mineral deposits. The James River flows through the center of county which
                                                        supplied water to farmlands and to mills. In the east side of the county coal was mined and in the west gold.  Today, agriculture is still 
                                                        important to the county economy. Goochland has updated its voting districts in 2022 to better represent the population of all 5 districts. 
-                                                       Goochland Country also has a huge summer program with plenty of activates. The activates are located all over the county at different facilities 
-                                                       including the skate park, gymnasium, the baseball fields, weight room, trails, and many more. "),
+                                                       Goochland Country also has a huge summer program with plenty of activates. The activities are located all over the county at different facilities 
+                                                       including the skate park, gymnasium, the baseball fields, weight room, trails, and many more [1][2]. "),
                                                      
                                                      h4(strong("Summary Statistics")),
-                                                     p("Goochland County’s population is 23,472 people, which is split between 49.8% male (11,698), and 50.2% female (11,774). [Link] 23,524 identify as one 
+                                                     p("Goochland County’s population is 23,472 people, which is split between 49.8% male (11,698), and 50.2% female (11,774) [3]. 23,524 identify as one 
                                                        race, where 19,302 are white, 3,267 are African American, 75 American Indian and Alaska Native, 494 Asian, 3 Native Hawaiian and Other Pacific Islander, 
-                                                       and 383 are some other race.[Link]" ),
-                                                     p("57.9% of the population within Goochland County is employed. The unemployment rate is 3.7% [Link"),
-                                                     p("There are 11,001 civilian employed population, 418 are employed under agriculture, forestry, fishing and hunting, and mining. [Link]"),
+                                                       and 383 are some other race [4]." ),
+                                                     p("57.9% of the population within Goochland County is employed. The unemployment rate is 3.7% [5]."),
+                                                     p("There are 11,001 civilian employed population, 418 are employed under agriculture, forestry, fishing and hunting, and mining [6]."),
                                                      p("There are a total of 8,711 households in Goochland County. The median income is $97,146 with a margin of error of around 8,582. Around 24.1% of the 6,600 
-                                                       family have one earner, while 46.1% have two earners. [Link] The greatest proportion (20.5%) of earners in Goochland earn between $100,000 to $149,999. 18.4% 
-                                                       of earners in Goochland earn $200,000 plus. [Link]"),
+                                                       family have one earner, while 46.1% have two earners [7]. The greatest proportion (20.5%) of earners in Goochland earn between $100,000 to $149,999. 18.4% 
+                                                       of earners in Goochland earn $200,000 plus [8]."),
                                                      p("Nearly 93.1% of the population 25 and over have graduate high school and gone to further their academic career. The highest level of education, a graduate or 
-                                                       professional degree has been attained by around 3,531 people, or 20.1% of the population over 25 years old. [Link]"),
+                                                       professional degree has been attained by around 3,531 people, or 20.1% of the population over 25 years old [9]."),
                                                      p("There were 355 farms with an average farm size of 160. This makes the total land coverage of farms to be 56,739 acres. $ 11,740,000 was generated from products 
                                                        sold to market. 46% of farms sold less than $2,500, and 3% of farms sold between over $100,000. Grains, oilseeds, dry beans, and dry peas were the main crop that 
-                                                       was sold ($2,846,000) and Milk from cows were the main Livestock, poultry, and products sold ($4,936,000). [Link]"),
+                                                       was sold ($2,846,000) and Milk from cows were the main Livestock, poultry, and products sold ($4,936,000) [10]."),
                                                      p("1.0% of Goochland’s population moved within the county, 8.4% moved into the county from a different county in VA, .7% moved from a completely different state, .3% 
-                                                       moved from abroad. [Link]"),
+                                                       moved from abroad [11]."),
                                               ) ,
                                               column(8, 
                                                      h4(strong("Sociodemographics")),
@@ -136,7 +138,13 @@ ui <- navbarPage(title = "DSPG 2022",
                                                      p(tags$small("Data Source: US Climate"))),
                                               column(12, 
                                                      h4("References: "), 
-                                                     p(tags$small("[1] Groundwater: Groundwater sustainability. (2021). Retrieved July 27, 2021, from https://www.ngwa.org/what-is-groundwater/groundwater-issues/groundwater-sustainability")) ,
+                                                     p(tags$small("[1] United States Department of Agriculture. Goochland County Virginia - National Agricultural Statistics Service. National Agricultural Statistics Survey. Retrieved July 6, 2022, from https://www.nass.usda.gov/Publications/AgCensus/2017/Online_Resources/County_Profiles/Virginia/cp51075.pdf")), 
+                                                     p(tags$small("[2] United States Department of Agriculture. Goochland County Virginia - National Agricultural Statistics Service. National Agricultural Statistics Survey. Retrieved July 6, 2022, from https://www.nass.usda.gov/Publications/AgCensus/2017/Online_Resources/County_Profiles/Virginia/cp51075.pdf")), 
+                                                     p(tags$small("[3] U.S. Census Bureau (2022). Age and Sex, 2020: ACS 5-Year Estimates Subject Tables. Retrieved from https://data.census.gov/cedsci/table?t=Populations%20and%20People&g=0500000US51075&tid=ACSST5Y2020.S0101.")), 
+                                                     p(tags$small("[4] U.S. Census Bureau (2022). Race, 2020: DEC Redistricting Data (PL 94-171). Retrieved from https://data.census.gov/cedsci/table?t=Populations%20and%20People&g=0500000US51075.")) ,
+                                                     p(tags$small("[5] U.S. Census Bureau (2022). Employment Status, 2020: ACS 5-Year Estimates Subject Tables. Retrieved from https://data.census.gov/cedsci/table?t=Employment%3AEmployment%20and%20Labor%20Force%20Status&g=0500000US51075&y=2020&tid=ACSST5Y2020.S2301&moe=false.")) ,
+                                                     p(tags$small("[6] ")),
+                                                     p(tags$small("[7]")),
                                                      p("", style = "padding-top:10px;")) 
                                      )), 
                             tabPanel("Powhatan", 
@@ -181,7 +189,7 @@ ui <- navbarPage(title = "DSPG 2022",
                                                      p(tags$small("Data Source: US Climate"))),
                                               column(12, 
                                                      h4("References: "), 
-                                                     p(tags$small("[1] Groundwater: Groundwater sustainability. (2021). Retrieved July 27, 2021, from https://www.ngwa.org/what-is-groundwater/groundwater-issues/groundwater-sustainability")) ,
+                                                     p(tags$small("United States Department of Agriculture. Powhatan County Virginia - National Agricultural Statistics Service. National Agricultural Statistics Survey. Retrieved July 6, 2022, from https://www.nass.usda.gov/Publications/AgCensus/2017/Online_Resources/County_Profiles/Virginia/cp51145.pdf")) ,
                                                      p("", style = "padding-top:10px;")) 
                                      ), 
                             ) 
@@ -365,11 +373,10 @@ ui <- navbarPage(title = "DSPG 2022",
                  ## Tab Introduction--------------------------------------------
                  tabPanel("Variables??", value = "conclusion", 
                           fluidRow(style = "margin: 6px;",
-                                   
+                                   h1(strong("Variables to Consider"), align = "center"),
                                    p("", style = "padding-top:10px;"),
                                    tabsetPanel(
                                      tabPanel("Land Use",
-                                              h1(strong("Land Use Data"), align = "center"),
                                               p("", style = "padding-top:10px;"),
                                               column(4, 
                                                      h4(strong("Land Use in Goochland and Powhatan Counties")),
@@ -383,7 +390,7 @@ ui <- navbarPage(title = "DSPG 2022",
                                        that commute into the county for work, leaving the remaining 25% of people who both work and live in the county [5]. ")
                                               ), 
                                               column(8, 
-                                                     h4(strong("Graphs of Land Use Distributions and Changes")),
+                                                     p(strong("Graphs of Land Use Distributions and Changes")),
                                                      selectInput("econ1", "Select Variable:", width = "100%", choices = c(
                                                        "Employment by Industry [1]" = "industry",
                                                        "Projected Population Change [2]" = "pop",
@@ -411,7 +418,6 @@ ui <- navbarPage(title = "DSPG 2022",
                                               
                                      ), 
                                      tabPanel("Crop Layer",
-                                              h1(strong("Crop Layer Data"), align = "center"),
                                               p("", style = "padding-top:10px;"),
                                               column(4, 
                                                      h4(strong("Crops Grown in Goochland and Powhatan Counties")),
@@ -425,7 +431,7 @@ ui <- navbarPage(title = "DSPG 2022",
                                        that commute into the county for work, leaving the remaining 25% of people who both work and live in the county [5]. ")
                                               ), 
                                               column(8, 
-                                                     h4(strong("Crop Layer Visualizations")),
+                                                     p(strong("Crop Layer Visualizations")),
                                                      selectInput("econ1", "Select Variable:", width = "100%", choices = c(
                                                        "Employment by Industry [1]" = "industry",
                                                        "Projected Population Change [2]" = "pop",
@@ -451,7 +457,6 @@ ui <- navbarPage(title = "DSPG 2022",
                                                      p(tags$small("[7] American Community Survey 5-year Estimates 2014/2019")), 
                                                      p(tags$small("[8]  Virginia Employment Commission")) )) ,
                                      tabPanel("Traffic Data",
-                                              h1(strong("Traffic & Commute Data"), align = "center"),
                                               p("", style = "padding-top:10px;"),
                                               column(4, 
                                                      h4(strong("Traffic in Goochland and Powhatan Counties")),
@@ -465,7 +470,7 @@ ui <- navbarPage(title = "DSPG 2022",
                                        that commute into the county for work, leaving the remaining 25% of people who both work and live in the county [5]. ")
                                               ), 
                                               column(8, 
-                                                     h4(strong("Traffic Visualizations")),
+                                                     p(strong("Traffic Visualizations")),
                                                      selectInput("econ1", "Select Variable:", width = "100%", choices = c(
                                                        "Employment by Industry [1]" = "industry",
                                                        "Projected Population Change [2]" = "pop",
@@ -497,65 +502,7 @@ ui <- navbarPage(title = "DSPG 2022",
                           
                  ), 
                  
-                 ## Tab Economics--------------------------------------------
-                 tabPanel("???", value = "economy",
-                          fluidRow(style = "margin: 6px;",
-                                   h1(strong("Residental and Commerical Development"), align = "center"),
-                                   p("", style = "padding-top:10px;"),
-                                   column(4, 
-                                          h4(strong("Economic Growth")),
-                                          p("As residential and commercial businesses have grown in the past ten years in Floyd, there continues to be a different demographic of the new movers
-                                       into the county. The new residents share a household income that is significantly higher than those traditionally residing in Floyd 
-                                       for the past ten years, and their home values have almost doubled. Due to the recent pandemic, there was a push to move to rural areas and work
-                                       from home, resulting in home values increasing in the past two years. Many new residents are moving into Floyd for its land features, natural 
-                                       beauty, and vibrant culture of music, arts, local foods and wines, and outdoor recreation. However, these same residents work outside the county
-                                       and contribute less to the county's economy. This trend is evident when observing commuting data for Floyd County from the Virginia Employment 
-                                       Commission [6]. Floyd has roughly 60% of employees that live in Floyd, but commute out of the county for their job, only 15%, in contrast,
-                                       that commute into the county for work, leaving the remaining 25% of people who both work and live in the county [5]. "),
-                                          p("Note that the only apparent sectors that show an increase include manufacturing and health services whereas the other sectors have stayed 
-                                       consistent or have declined within the past 5 years. Depending on these sectors’ water usage, the county may or may not be able to withstand further 
-                                       increases in their future development plans [1].  Floyd County’s population is projected  to continue to grow at a steady rate necessitating the need 
-                                       for job creation in the county to support the population change. The stakeholders emphasized a high average age which potentially can limit the
-                                       type and number of new jobs that are viable to thrive within the county. Therefore, an increase in population as a whole would counter act the county’s 
-                                       aging population, opening up the sectors based on their skill base [4]. In terms of income per capita which is an important indicator for the economic 
-                                       health of an area, Floyd County is consistently below average compared to the other localities indicating low wages for residents even compared to 
-                                       similar counties and though the most recent data for new business growth shows constant new businesses, there is no positive trend which indicators the 
-                                       county is growing in terms of GDP [3][6]. The retail sales by type graph shows this inconclusiveness further due to no sector having a strong positive slope 
-                                       over the last 8 years [7]. "),
-                                          p("As the United States aims to move toward a greener more sustainable future, the job market will evolve accordingly, whether by choice or by government mandate. 
-                                       Focusing on new green industries and infrastructure has the potential to attract more residents to work within the county and bring new businesses, residents, and tourists to operate, work, live, and enjoy leisure time in Floyd County. ")
-                                   ), 
-                                   column(8, 
-                                          h4(strong("Graph of Economic Parameters")),
-                                          selectInput("econ1", "Select Variable:", width = "100%", choices = c(
-                                            "Employment by Industry [1]" = "industry",
-                                            "Projected Population Change [2]" = "pop",
-                                            "Income per Capita [3]" = "capita", 
-                                            "Population by Age [4]" = "age", 
-                                            "Number of Commuters [5]" = "commute", 
-                                            "New Business Growth [6]" = "business",
-                                            "Retail Sales by Type [7]" = "retail",
-                                            "Unemployment Rate Timeseries [8]" = "unemplo")
-                                          ),
-                                          plotlyOutput("trend1", height = "600px")
-                                          
-                                   ),
-                                   column(12, 
-                                          
-                                          h4("References") , 
-                                          p(tags$small("[1] American Community Survey 5-year Estimates 2014/2019")), 
-                                          p(tags$small("[2] U.S. Census Bureau, Weldon Cooper Center for Public Service")), 
-                                          p(tags$small("[3] U.S Census Bureau")), 
-                                          p(tags$small("[4]  2010 Census")), 
-                                          p(tags$small("[5] U.S. Census Bureau, OnTheMap Application and LEHD Origin-Destination Employment Statistics, 2014")), 
-                                          p(tags$small("[6] Virginia Employment Commission, Economic Information & Analytics, Quarterly Census of Employment and Wages (QCEW), 4th Quarter (October, November, December) 2020.")), 
-                                          p(tags$small("[7] American Community Survey 5-year Estimates 2014/2019")), 
-                                          p(tags$small("[8]  Virginia Employment Commission")) ) 
-                                   
-                          )
-                          
-                          
-                 ), 
+
                  ## Tab Data and Methodology--------------------------------------------
                  tabPanel("Data", 
                           fluidRow(style = "margin: 6px;",
@@ -567,27 +514,21 @@ ui <- navbarPage(title = "DSPG 2022",
                                       providing information on population sociodemographic and ocioeconomic characteristics including employment, disability, and health insurance coverage. We used ACS 2014/18 5-year
                                       estimates to obtain census tract and census block group-level to explore Floyd County resident characteristics."),
                                           br(""),
-                                          img(src = "data-ngwa.png", style = "display: inline; float: left;", width = "150px"),
+                                          img(src = "usgs.jpg", style = "display: inline; float: left;", width = "150px"),
                                           p(strong("USGS National Land Cover Database"), " ***description*** ")
                                    ),
                                    column(4,
-                                          img(src = "data-nrv.png", style = "display: inline; float: left;", width = "150px"),
+                                          img(src = "goochland.jpg", style = "display: inline; float: left;", width = "150px"),
                                           p(strong("Goochland County Administrative Data"), " ***description*** "),
                                           br(""),
-                                          img(src = "data-usgsnhd.jpeg", style = "display: inline; float: left;", width = "200px"),
+                                          img(src = "vdot.png", style = "display: inline; float: left;", width = "200px"),
                                           p(strong("VDOT Traffic Data "), " ***description*** "),
                                           br(""),
                                           
                                    ),
                                    column(4,
-                                          img(src = "data-epa.png", style = "display: inline; float: left;", width = "150px"),
-                                          p(strong("Powhatan County Administrative Data"), " ***descripition*** "),
-                                          br(""),
-                                          img(src = "data-google-earth.png", style = "display: inline; float: left;", width = "120px"),
-                                          p(strong("Google Earth Engine."), "Google Earth Engine combines a multi-petabyte catalog of satellite imagery and geospatial datasets with planetary-scale analysis 
-                                     capabilities and makes it available for scientists, researchers, and developers to detect changes, map trends, and quantify differences on the Earth's surface. We 
-                                       used it to collect data on NDWI, precipitation and elevation based on the geographical location of the well sites for the  well water estimation model using NDWI."),
-                                          br(""), 
+                                          img(src = "powhatan.jpg", style = "display: inline; float: left;", width = "150px"),
+                                          p(strong("Powhatan County Administrative Data"), " ***descripition*** ") 
                                            
                                           
                                    ),
@@ -615,13 +556,13 @@ ui <- navbarPage(title = "DSPG 2022",
                           fluidRow(style = "margin-left: 100px; margin-right: 100px;",
                                    column(6, align = "center",
                                           h4(strong("DSPG Undergraduate Interns")),
-                                          img(src = "farm.jpg", style = "display: inline; border: 1px solid #C0C0C0;", width = "150px"),
-                                          img(src = "team-julie.jpg", style = "display: inline; border: 1px solid #C0C0C0;", width = "150px"),
+                                          img(src = "john.jpg", style = "display: inline; border: 1px solid #C0C0C0;", width = "150px"),
+                                          img(src = "chris.jpg", style = "display: inline; border: 1px solid #C0C0C0;", width = "150px"),
                                           br(), 
-                                          img(src = "rachel.jpg", style = "display: inline; border: 1px solid #C0C0C0;", width = "150px"),
-                                          p(a(href = 'https://www.linkedin.com/in/esha-dwibedi-83a63476/', 'John Malla', target = '_blank'), "(Virginia Tech, PHD in Economics);",
+                                          img(src = "rache.jpg", style = "display: inline; border: 1px solid #C0C0C0;", width = "150px"),
+                                          p(a(href = 'https://www.linkedin.com/in/esha-dwibedi-83a63476/', 'John Malla', target = '_blank'), "(Virginia Tech, Undergraduate in Computational Modeling and Data Analytics);",
                                             br(), 
-                                            a(href = 'https://www.linkedin.com/in/julie-rebstock', 'Christopher Vest', target = '_blank'), "(Virgina Tech, Undergraduate in Economics and Computational Modeling and Data Analytics);",
+                                            a(href = 'https://www.linkedin.com/in/julie-rebstock', 'Christopher Vest', target = '_blank'), "(Jacksonville State University, Undergraduate in Finance);",
                                             br(), 
                                             a(href = 'www.linkedin.com/in/rachelinman21', 'Rachel Inman', target = '_blank'), "(Virginia Tech, Undergraduate in Smart and Sustainable Cities and Minoring in Landscape Architecture)."),
                                           p("", style = "padding-top:10px;") 
