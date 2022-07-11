@@ -5,9 +5,9 @@ account: racheli0121
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 6597582
-bundleId: 6074616
+bundleId: 6088218
 url: https://racheli0121.shinyapps.io/LandUse-Shiny/
-when: 1657111533.51314
-lastSyncTime: 1657111533.51318
+when: 1657552844.62264
+lastSyncTime: 1657552844.62266
 asMultiple: FALSE
 asStatic: FALSE

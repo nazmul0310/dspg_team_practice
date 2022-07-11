@@ -8,7 +8,7 @@
 #
 # LAND USE PROJECT APP
 
-install.packages(c('shiny', 'dplyer', 'shinycssloaders', 'shinythemes', 'stingr', 'shinyjs', 'ggplot2', 'plotly', 'rsconnect'))
+#install.packages(c('shiny', 'dplyer', 'shinycssloaders', 'shinythemes', 'stingr', 'shinyjs', 'ggplot2', 'plotly', 'rsconnect'))
 
 library(shiny)
 library(dplyr)
@@ -19,13 +19,71 @@ library(shinyjs)
 library(ggplot2)
 library(plotly)
 library(rsconnect)
+library(viridis)
 
 # data --------------------------------------------------------------------------------------------------------------------
 
+# gsoc
+# goochland age graph
+
+county = "Goochland"
+year = 2020
+fileName <- paste("/data/Robjects/", year, county, ".rData", sep="")
+
+load(paste0(getwd(), fileName))
+
+age.df <- data.frame(name = population$variable, value = population$estimate) [2:19,]
+ages <- age.df$value
+age.df$name<-factor(age.df$name, levels = age.df$name)
+newcat <-c("9 and below", "10 to 19", "20 to 29", "30 to 39", "40 to 49", "50 to 59", "60 to 69", "70 to 79", "80 and above")
+combined <- c(ages[1] + ages[2], 
+              ages[3] + ages[4],
+              ages[5] + ages[6], 
+              ages[7] + ages[8],
+              ages[9] + ages[10], 
+              ages[11] + ages[12],
+              ages[13] + ages[14], 
+              ages[15] + ages[16],
+              ages[17] + ages[18])
+new.age.df <- data.frame(name = newcat, value = combined)
+new.age.df$name<-factor(new.age.df$name, levels = new.age.df$name)
 
 
-
+goochland_age <- ggplot(new.age.df, aes(x=name , y=value, fill=new.age.df$name))+
+  geom_bar(stat="identity") + 
+  coord_flip() + 
+  scale_fill_viridis(discrete=TRUE) + 
+  theme_light() + 
+  theme(legend.position="none") + 
+  labs(title="Proportion of Age Groups", y= "Proportion of Population", x= "Age Groups", caption="Source: ACS5 2016-2020")
   
+# goochland industry graph
+
+ind.df <- data.frame(name = industry$variable, value = industry$estimate)
+
+goochland_industry <- ggplot(ind.df, aes(x = reorder(name, -value), y = value, fill = value)) + 
+  geom_bar(stat = "identity") + theme(legend.position = "none") +
+  coord_flip() + scale_fill_viridis() + 
+  labs(title = "Proportion of Population in Industries", y = "Proportion of Population", x = "Industry", caption = acs_Caption)
+
+# goochland income graph
+
+plot(income)
+goochland_income <- ggplot(income, aes(x = median, y = NAME, fill = NAME))+ geom_bar(stat = "identity") + theme(legend.position = "none") + scale_fill_viridis(discrete=TRUE) + labs(title="Median Income by Census Tract", caption="Source: ACS5 2016-2020")
+
+# goochland education graph
+
+edu_earn.df <- data.frame(name = education_earn$variable, values = education_earn$estimate)
+edu_earn.df$name <- factor(edu_earn.df$name, levels = edu_earn.df$name)
+
+goochland_education <- ggplot(edu_earn.df, aes(x = name, y = values)) + 
+  geom_bar(stat = "identity", mapping=(aes(fill = name))) + 
+  theme(legend.position = "none") + scale_fill_viridis(discrete=TRUE) +
+  labs(title = "Median Earnings by Educational Attainment over the age of 25", x = "Highest Education", y = "Median Earnings", caption = "Source: ACS5 2016-2020") + 
+  geom_text(aes(label = values), position = position_stack(vjust = 1.1)) +
+  scale_x_discrete(labels = c("Below\nhighschool", "Highschool\ngraduate", "Some college/\nAssociates'", "Bachelor's", "Graduate")) + 
+  scale_y_continuous(breaks=c(0, 20000, 40000, 52000, 60000))
+
 # body --------------------------------------------------------------------------------------------------------------------
   
 ui <- navbarPage(title = "DSPG 2022",
@@ -53,7 +111,7 @@ ui <- navbarPage(title = "DSPG 2022",
                                             rich agricultural histories.  Although Powhatan County has been growing and devolving faster than the average rate, they like Goochland County would like to 
                                             keep their agricultural roots.  "),
                                           p(),
-                                          p(strong("The problem:"), "Powhatan and Goochland are both rural counties, but they both are located close to Richmond. Being that close to a big city like 
+                                          p(strong("The problem:"), "Powhatan and Goochland are both rural counties that are located close to Richmond. Being that close to a big city like 
                                             Richmond has its advantages, but also its drawbacks. One of the biggest drawbacks is land conversion. Land conversion is when land shifts its use from one 
                                             use to another. In the case of Powhatan and Goochland, it means land is changing from agricultural land to residential. This really could hurt the economies 
                                             of the mostly agricultural counties. Both counties have enacted policies to help combat land conversion. Powhatan with its land tax deferral and Goochland with 
@@ -94,7 +152,7 @@ ui <- navbarPage(title = "DSPG 2022",
                           ) 
                  ),
                  
-                 ## Tab Geology--------------------------------------------
+                 ## Tab sociodemographics --------------------------------------------
                  # need a different name
                  navbarMenu("Sociodemographics" , 
                             tabPanel("Goochland", 
@@ -129,12 +187,13 @@ ui <- navbarPage(title = "DSPG 2022",
                                               ) ,
                                               column(8, 
                                                      h4(strong("Sociodemographics")),
-                                                     selectInput("var1", "Select Variable:", width = "100%", choices = c(
-                                                       "Rainfall" = "rainfall",
-                                                       "Minimum Temperature" = "min", 
-                                                       "Maximum Temperature" = "max")
+                                                     selectInput("goochland_soc", "Select Variable:", width = "100%", choices = c(
+                                                       "Proportion of Age Groups" = "gage",
+                                                       "Proportion of Population in Industries" = "gind",
+                                                       "Median Income" = "ginc",
+                                                       "Median Income by Educational Attainment Over the Age of 25" = "gedu")
                                                      ),
-                                                     plotlyOutput("precipitation"),
+                                                     plotOutput("gsoc", height = "500px"),
                                                      p(tags$small("Data Source: US Climate"))),
                                               column(12, 
                                                      h4("References: "), 
@@ -180,12 +239,14 @@ ui <- navbarPage(title = "DSPG 2022",
                                               ) ,
                                               column(8, 
                                                      h4(strong("Sociodemographics")),
-                                                     selectInput("var1", "Select Variable:", width = "100%", choices = c(
-                                                       "Rainfall" = "rainfall",
-                                                       "Minimum Temperature" = "min", 
-                                                       "Maximum Temperature" = "max")
+                                                     selectInput("powhatan_soc", "Select Variable:", width = "100%", choices = c(
+                                                       "Proportion of Age Groups" = "page",
+                                                       "Proportion of Population in Industries" = "pind",
+                                                       "Median Income" = "pinc",
+                                                       "Median Income by Educational Attainment Over the Age of 25" = "pedu")
                                                      ),
-                                                     plotlyOutput("precipitation"),
+                                                     
+                                                     plotOutput("psoc", height = "500px"),
                                                      p(tags$small("Data Source: US Climate"))),
                                               column(12, 
                                                      h4("References: "), 
@@ -198,10 +259,10 @@ ui <- navbarPage(title = "DSPG 2022",
                             
                  ),
                  
-                 ## Tab Conclusion --------------------------------------------
+                 ## Tab Policy --------------------------------------------
                  tabPanel("Policy", value = "conclusion", 
                           fluidRow(style = "margin: 6px;",
-                                   h1(strong("Land Use Policies"), align = "center"),
+                                   h1(strong("Land Use & Environmental Policies"), align = "center"),
                                    p("", style = "padding-top:10px;"),
                                    p("Policy plays a key role in land-use. At every level- federal, state, and local- officials develop land use plans, with a wide 
                                      variety of different objectives and long-term visions. These plans drive changes in land-use, and it is important to investigate 
@@ -370,143 +431,525 @@ ui <- navbarPage(title = "DSPG 2022",
                           
                           
                  ),
-                 ## Tab Introduction--------------------------------------------
-                 tabPanel("Variables??", value = "conclusion", 
-                          fluidRow(style = "margin: 6px;",
-                                   h1(strong("Variables to Consider"), align = "center"),
-                                   p("", style = "padding-top:10px;"),
-                                   tabsetPanel(
-                                     tabPanel("Land Use",
-                                              p("", style = "padding-top:10px;"),
-                                              column(4, 
-                                                     h4(strong("Land Use in Goochland and Powhatan Counties")),
-                                                     p("As residential and commercial businesses have grown in the past ten years in Floyd, there continues to be a different demographic of the new movers
-                                       into the county. The new residents share a household income that is significantly higher than those traditionally residing in Floyd 
-                                       for the past ten years, and their home values have almost doubled. Due to the recent pandemic, there was a push to move to rural areas and work
-                                       from home, resulting in home values increasing in the past two years. Many new residents are moving into Floyd for its land features, natural 
-                                       beauty, and vibrant culture of music, arts, local foods and wines, and outdoor recreation. However, these same residents work outside the county
-                                       and contribute less to the county's economy. This trend is evident when observing commuting data for Floyd County from the Virginia Employment 
-                                       Commission [6]. Floyd has roughly 60% of employees that live in Floyd, but commute out of the county for their job, only 15%, in contrast,
-                                       that commute into the county for work, leaving the remaining 25% of people who both work and live in the county [5]. ")
-                                              ), 
-                                              column(8, 
-                                                     p(strong("Graphs of Land Use Distributions and Changes")),
-                                                     selectInput("econ1", "Select Variable:", width = "100%", choices = c(
-                                                       "Employment by Industry [1]" = "industry",
-                                                       "Projected Population Change [2]" = "pop",
-                                                       "Income per Capita [3]" = "capita", 
-                                                       "Population by Age [4]" = "age", 
-                                                       "Number of Commuters [5]" = "commute", 
-                                                       "New Business Growth [6]" = "business",
-                                                       "Retail Sales by Type [7]" = "retail",
-                                                       "Unemployment Rate Timeseries [8]" = "unemplo")
-                                                     ),
-                                                     plotlyOutput("trend1", height = "600px")
-                                                     
-                                              ),
-                                              column(12, 
-                                                     
-                                                     h4("References") , 
-                                                     p(tags$small("[1] American Community Survey 5-year Estimates 2014/2019")), 
-                                                     p(tags$small("[2] U.S. Census Bureau, Weldon Cooper Center for Public Service")), 
-                                                     p(tags$small("[3] U.S Census Bureau")), 
-                                                     p(tags$small("[4]  2010 Census")), 
-                                                     p(tags$small("[5] U.S. Census Bureau, OnTheMap Application and LEHD Origin-Destination Employment Statistics, 2014")), 
-                                                     p(tags$small("[6] Virginia Employment Commission, Economic Information & Analytics, Quarterly Census of Employment and Wages (QCEW), 4th Quarter (October, November, December) 2020.")), 
-                                                     p(tags$small("[7] American Community Survey 5-year Estimates 2014/2019")), 
-                                                     p(tags$small("[8]  Virginia Employment Commission")) )
-                                              
-                                     ), 
-                                     tabPanel("Crop Layer",
-                                              p("", style = "padding-top:10px;"),
-                                              column(4, 
-                                                     h4(strong("Crops Grown in Goochland and Powhatan Counties")),
-                                                     p("As residential and commercial businesses have grown in the past ten years in Floyd, there continues to be a different demographic of the new movers
-                                       into the county. The new residents share a household income that is significantly higher than those traditionally residing in Floyd 
-                                       for the past ten years, and their home values have almost doubled. Due to the recent pandemic, there was a push to move to rural areas and work
-                                       from home, resulting in home values increasing in the past two years. Many new residents are moving into Floyd for its land features, natural 
-                                       beauty, and vibrant culture of music, arts, local foods and wines, and outdoor recreation. However, these same residents work outside the county
-                                       and contribute less to the county's economy. This trend is evident when observing commuting data for Floyd County from the Virginia Employment 
-                                       Commission [6]. Floyd has roughly 60% of employees that live in Floyd, but commute out of the county for their job, only 15%, in contrast,
-                                       that commute into the county for work, leaving the remaining 25% of people who both work and live in the county [5]. ")
-                                              ), 
-                                              column(8, 
-                                                     p(strong("Crop Layer Visualizations")),
-                                                     selectInput("econ1", "Select Variable:", width = "100%", choices = c(
-                                                       "Employment by Industry [1]" = "industry",
-                                                       "Projected Population Change [2]" = "pop",
-                                                       "Income per Capita [3]" = "capita", 
-                                                       "Population by Age [4]" = "age", 
-                                                       "Number of Commuters [5]" = "commute", 
-                                                       "New Business Growth [6]" = "business",
-                                                       "Retail Sales by Type [7]" = "retail",
-                                                       "Unemployment Rate Timeseries [8]" = "unemplo")
-                                                     ),
-                                                     plotlyOutput("trend1", height = "600px")
-                                                     
-                                              ),
-                                              column(12, 
-                                                     
-                                                     h4("References") , 
-                                                     p(tags$small("[1] American Community Survey 5-year Estimates 2014/2019")), 
-                                                     p(tags$small("[2] U.S. Census Bureau, Weldon Cooper Center for Public Service")), 
-                                                     p(tags$small("[3] U.S Census Bureau")), 
-                                                     p(tags$small("[4]  2010 Census")), 
-                                                     p(tags$small("[5] U.S. Census Bureau, OnTheMap Application and LEHD Origin-Destination Employment Statistics, 2014")), 
-                                                     p(tags$small("[6] Virginia Employment Commission, Economic Information & Analytics, Quarterly Census of Employment and Wages (QCEW), 4th Quarter (October, November, December) 2020.")), 
-                                                     p(tags$small("[7] American Community Survey 5-year Estimates 2014/2019")), 
-                                                     p(tags$small("[8]  Virginia Employment Commission")) )) ,
-                                     tabPanel("Traffic Data",
-                                              p("", style = "padding-top:10px;"),
-                                              column(4, 
-                                                     h4(strong("Traffic in Goochland and Powhatan Counties")),
-                                                     p("As residential and commercial businesses have grown in the past ten years in Floyd, there continues to be a different demographic of the new movers
-                                       into the county. The new residents share a household income that is significantly higher than those traditionally residing in Floyd 
-                                       for the past ten years, and their home values have almost doubled. Due to the recent pandemic, there was a push to move to rural areas and work
-                                       from home, resulting in home values increasing in the past two years. Many new residents are moving into Floyd for its land features, natural 
-                                       beauty, and vibrant culture of music, arts, local foods and wines, and outdoor recreation. However, these same residents work outside the county
-                                       and contribute less to the county's economy. This trend is evident when observing commuting data for Floyd County from the Virginia Employment 
-                                       Commission [6]. Floyd has roughly 60% of employees that live in Floyd, but commute out of the county for their job, only 15%, in contrast,
-                                       that commute into the county for work, leaving the remaining 25% of people who both work and live in the county [5]. ")
-                                              ), 
-                                              column(8, 
-                                                     p(strong("Traffic Visualizations")),
-                                                     selectInput("econ1", "Select Variable:", width = "100%", choices = c(
-                                                       "Employment by Industry [1]" = "industry",
-                                                       "Projected Population Change [2]" = "pop",
-                                                       "Income per Capita [3]" = "capita", 
-                                                       "Population by Age [4]" = "age", 
-                                                       "Number of Commuters [5]" = "commute", 
-                                                       "New Business Growth [6]" = "business",
-                                                       "Retail Sales by Type [7]" = "retail",
-                                                       "Unemployment Rate Timeseries [8]" = "unemplo")
-                                                     ),
-                                                     plotlyOutput("trend1", height = "600px")
-                                                     
-                                              ),
-                                              column(12, 
-                                                     
-                                                     h4("References") , 
-                                                     p(tags$small("[1] American Community Survey 5-year Estimates 2014/2019")), 
-                                                     p(tags$small("[2] U.S. Census Bureau, Weldon Cooper Center for Public Service")), 
-                                                     p(tags$small("[3] U.S Census Bureau")), 
-                                                     p(tags$small("[4]  2010 Census")), 
-                                                     p(tags$small("[5] U.S. Census Bureau, OnTheMap Application and LEHD Origin-Destination Employment Statistics, 2014")), 
-                                                     p(tags$small("[6] Virginia Employment Commission, Economic Information & Analytics, Quarterly Census of Employment and Wages (QCEW), 4th Quarter (October, November, December) 2020.")), 
-                                                     p(tags$small("[7] American Community Survey 5-year Estimates 2014/2019")), 
-                                                     p(tags$small("[8]  Virginia Employment Commission")) ) 
-                                     )
-                                   ) 
-                          ) 
-                          
-                          
-                 ), 
-                 
+                 ## Tab Land Use --------------------------------------------
 
-                 ## Tab Data and Methodology--------------------------------------------
-                 tabPanel("Data", 
+                 navbarMenu("Land Use" , 
+                            tabPanel("Goochland", 
+                                     fluidRow(style = "margin: 6px;",
+                                              h1(strong("Variables to Consider"), align = "center"),
+                                              p("", style = "padding-top:10px;"),
+                                              tabsetPanel(
+                                                tabPanel("Land Use",
+                                                         p("", style = "padding-top:10px;"),
+                                                         column(4, 
+                                                                h4(strong("Land Use in Goochland County")),
+                                                                p("As residential and commercial businesses have grown in the past ten years in Floyd, there continues to be a different demographic of the new movers
+                                       into the county. The new residents share a household income that is significantly higher than those traditionally residing in Floyd 
+                                       for the past ten years, and their home values have almost doubled. Due to the recent pandemic, there was a push to move to rural areas and work
+                                       from home, resulting in home values increasing in the past two years. Many new residents are moving into Floyd for its land features, natural 
+                                       beauty, and vibrant culture of music, arts, local foods and wines, and outdoor recreation. However, these same residents work outside the county
+                                       and contribute less to the county's economy. This trend is evident when observing commuting data for Floyd County from the Virginia Employment 
+                                       Commission [6]. Floyd has roughly 60% of employees that live in Floyd, but commute out of the county for their job, only 15%, in contrast,
+                                       that commute into the county for work, leaving the remaining 25% of people who both work and live in the county [5]. ")
+                                                         ), 
+                                                         column(8, 
+                                                                h4(strong("Land Use Distribution and Change by Year")),
+                                                                selectInput("econ1", "Select Variable:", width = "100%", choices = c(
+                                                                  "2018" = "g2018",
+                                                                  "2019" = "g2019",
+                                                                  "2020" = "g2020", 
+                                                                  "2021" = "g2021", 
+                                                                  "2022" = "g2022")
+                                                                ),
+                                                                #          plotlyOutput("trend1", height = "600px")
+                                                                h4(strong("Land Use Transition Matrix")),
+                                                                #withSpinner(leafletOutput("mines")),
+                                                                p(tags$small("Data Source: The Department of Mines, Minerals and Energy")))  ,
+                                                         column(12, 
+                                                                
+                                                                h4("References") , 
+                                                                p(tags$small("[1] American Community Survey 5-year Estimates 2014/2019")), 
+                                                                p(tags$small("[2] U.S. Census Bureau, Weldon Cooper Center for Public Service")), 
+                                                                p(tags$small("[3] U.S Census Bureau")), 
+                                                                p(tags$small("[4]  2010 Census")), 
+                                                                p(tags$small("[5] U.S. Census Bureau, OnTheMap Application and LEHD Origin-Destination Employment Statistics, 2014")), 
+                                                                p(tags$small("[6] Virginia Employment Commission, Economic Information & Analytics, Quarterly Census of Employment and Wages (QCEW), 4th Quarter (October, November, December) 2020.")), 
+                                                                p(tags$small("[7] American Community Survey 5-year Estimates 2014/2019")), 
+                                                                p(tags$small("[8]  Virginia Employment Commission")) )
+                                                         
+                                                ), 
+                                                tabPanel("Crop Layer",
+                                                         p("", style = "padding-top:10px;"),
+                                                         column(4, 
+                                                                h4(strong("Crops Grown in Goochland County")),
+                                                                p("As residential and commercial businesses have grown in the past ten years in Floyd, there continues to be a different demographic of the new movers
+                                       into the county. The new residents share a household income that is significantly higher than those traditionally residing in Floyd 
+                                       for the past ten years, and their home values have almost doubled. Due to the recent pandemic, there was a push to move to rural areas and work
+                                       from home, resulting in home values increasing in the past two years. Many new residents are moving into Floyd for its land features, natural 
+                                       beauty, and vibrant culture of music, arts, local foods and wines, and outdoor recreation. However, these same residents work outside the county
+                                       and contribute less to the county's economy. This trend is evident when observing commuting data for Floyd County from the Virginia Employment 
+                                       Commission [6]. Floyd has roughly 60% of employees that live in Floyd, but commute out of the county for their job, only 15%, in contrast,
+                                       that commute into the county for work, leaving the remaining 25% of people who both work and live in the county [5]. ")
+                                                         ), 
+                                                         column(8, 
+                                                                h4(strong("Crop Layer Map")),
+                                                                
+                                                                #                plotlyOutput("trend1", height = "600px")
+                                                                
+                                                         ),
+                                                         column(12, 
+                                                                
+                                                                h4("References") , 
+                                                                p(tags$small("[1] American Community Survey 5-year Estimates 2014/2019")), 
+                                                                p(tags$small("[2] U.S. Census Bureau, Weldon Cooper Center for Public Service")), 
+                                                                p(tags$small("[3] U.S Census Bureau")), 
+                                                                p(tags$small("[4]  2010 Census")), 
+                                                                p(tags$small("[5] U.S. Census Bureau, OnTheMap Application and LEHD Origin-Destination Employment Statistics, 2014")), 
+                                                                p(tags$small("[6] Virginia Employment Commission, Economic Information & Analytics, Quarterly Census of Employment and Wages (QCEW), 4th Quarter (October, November, December) 2020.")), 
+                                                                p(tags$small("[7] American Community Survey 5-year Estimates 2014/2019")), 
+                                                                p(tags$small("[8]  Virginia Employment Commission")) )) ,
+                                                tabPanel("Soil Quality",
+                                                         p("", style = "padding-top:10px;"),
+                                                         column(4, 
+                                                                h4(strong("Soil Quality in Goochland County")),
+                                                                p("As residential and commercial businesses have grown in the past ten years in Floyd, there continues to be a different demographic of the new movers
+                                       into the county. The new residents share a household income that is significantly higher than those traditionally residing in Floyd 
+                                       for the past ten years, and their home values have almost doubled. Due to the recent pandemic, there was a push to move to rural areas and work
+                                       from home, resulting in home values increasing in the past two years. Many new residents are moving into Floyd for its land features, natural 
+                                       beauty, and vibrant culture of music, arts, local foods and wines, and outdoor recreation. However, these same residents work outside the county
+                                       and contribute less to the county's economy. This trend is evident when observing commuting data for Floyd County from the Virginia Employment 
+                                       Commission [6]. Floyd has roughly 60% of employees that live in Floyd, but commute out of the county for their job, only 15%, in contrast,
+                                       that commute into the county for work, leaving the remaining 25% of people who both work and live in the county [5]. ")
+                                                         ), 
+                                                         column(8, 
+                                                                h4(strong("Soil Quality Map")),
+                                                                
+                                                                #                plotlyOutput("trend1", height = "600px")
+                                                                
+                                                         ),
+                                                         column(12, 
+                                                                
+                                                                h4("References") , 
+                                                                p(tags$small("[1] American Community Survey 5-year Estimates 2014/2019")), 
+                                                                p(tags$small("[2] U.S. Census Bureau, Weldon Cooper Center for Public Service")), 
+                                                                p(tags$small("[3] U.S Census Bureau")), 
+                                                                p(tags$small("[4]  2010 Census")), 
+                                                                p(tags$small("[5] U.S. Census Bureau, OnTheMap Application and LEHD Origin-Destination Employment Statistics, 2014")), 
+                                                                p(tags$small("[6] Virginia Employment Commission, Economic Information & Analytics, Quarterly Census of Employment and Wages (QCEW), 4th Quarter (October, November, December) 2020.")), 
+                                                                p(tags$small("[7] American Community Survey 5-year Estimates 2014/2019")), 
+                                                                p(tags$small("[8]  Virginia Employment Commission")) )) ,
+                                                tabPanel("Traffic Data",
+                                                         p("", style = "padding-top:10px;"),
+                                                         column(4, 
+                                                                h4(strong("Traffic in Goochland County")),
+                                                                p("As residential and commercial businesses have grown in the past ten years in Floyd, there continues to be a different demographic of the new movers
+                                       into the county. The new residents share a household income that is significantly higher than those traditionally residing in Floyd 
+                                       for the past ten years, and their home values have almost doubled. Due to the recent pandemic, there was a push to move to rural areas and work
+                                       from home, resulting in home values increasing in the past two years. Many new residents are moving into Floyd for its land features, natural 
+                                       beauty, and vibrant culture of music, arts, local foods and wines, and outdoor recreation. However, these same residents work outside the county
+                                       and contribute less to the county's economy. This trend is evident when observing commuting data for Floyd County from the Virginia Employment 
+                                       Commission [6]. Floyd has roughly 60% of employees that live in Floyd, but commute out of the county for their job, only 15%, in contrast,
+                                       that commute into the county for work, leaving the remaining 25% of people who both work and live in the county [5]. ")
+                                                         ), 
+                                                         column(8, 
+                                                                h4(strong("Traffic Visualizations")),
+                                                                selectInput("econ1", "Select Variable:", width = "100%", choices = c(
+                                                                  "Traffic Volume" = "gvol",
+                                                                  "Proximity to Richmond" = "grich")
+                                                                ),
+                                                                #                plotlyOutput("trend1", height = "600px")
+                                                                
+                                                         ),
+                                                         column(12, 
+                                                                
+                                                                h4("References") , 
+                                                                p(tags$small("[1] American Community Survey 5-year Estimates 2014/2019")), 
+                                                                p(tags$small("[2] U.S. Census Bureau, Weldon Cooper Center for Public Service")), 
+                                                                p(tags$small("[3] U.S Census Bureau")), 
+                                                                p(tags$small("[4]  2010 Census")), 
+                                                                p(tags$small("[5] U.S. Census Bureau, OnTheMap Application and LEHD Origin-Destination Employment Statistics, 2014")), 
+                                                                p(tags$small("[6] Virginia Employment Commission, Economic Information & Analytics, Quarterly Census of Employment and Wages (QCEW), 4th Quarter (October, November, December) 2020.")), 
+                                                                p(tags$small("[7] American Community Survey 5-year Estimates 2014/2019")), 
+                                                                p(tags$small("[8]  Virginia Employment Commission")) ) 
+                                                )
+                                              ) 
+                                     )), 
+                            tabPanel("Powhatan", 
+                                     fluidRow(style = "margin: 6px;",
+                                              h1(strong("Variables to Consider"), align = "center"),
+                                              p("", style = "padding-top:10px;"),
+                                              tabsetPanel(
+                                                tabPanel("Land Use",
+                                                         p("", style = "padding-top:10px;"),
+                                                         column(4, 
+                                                                h4(strong("Land Use in Powhatan County")),
+                                                                p("As residential and commercial businesses have grown in the past ten years in Floyd, there continues to be a different demographic of the new movers
+                                       into the county. The new residents share a household income that is significantly higher than those traditionally residing in Floyd 
+                                       for the past ten years, and their home values have almost doubled. Due to the recent pandemic, there was a push to move to rural areas and work
+                                       from home, resulting in home values increasing in the past two years. Many new residents are moving into Floyd for its land features, natural 
+                                       beauty, and vibrant culture of music, arts, local foods and wines, and outdoor recreation. However, these same residents work outside the county
+                                       and contribute less to the county's economy. This trend is evident when observing commuting data for Floyd County from the Virginia Employment 
+                                       Commission [6]. Floyd has roughly 60% of employees that live in Floyd, but commute out of the county for their job, only 15%, in contrast,
+                                       that commute into the county for work, leaving the remaining 25% of people who both work and live in the county [5]. ")
+                                                         ), 
+                                                         column(8, 
+                                                                h4(strong("Land Use Distribution and Change by Year")),
+                                                                selectInput("econ1", "Select Variable:", width = "100%", choices = c(
+                                                                  "2014" = "p2014",
+                                                                  "2015" = "p2015",
+                                                                  "2016" = "p2016", 
+                                                                  "2017" = "p2017", 
+                                                                  "2018" = "p2018", 
+                                                                  "2019" = "p2019",
+                                                                  "2020" = "p2020",
+                                                                  "2021" = "p2021")
+                                                                ),
+                                                                #          plotlyOutput("trend1", height = "600px")
+                                                                h4(strong("Land Use Transition Matrix")),
+                                                                #withSpinner(leafletOutput("mines")),
+                                                                p(tags$small("Data Source: The Department of Mines, Minerals and Energy")))  ,
+                                                                
+                                                         column(12, 
+                                                                
+                                                                h4("References") , 
+                                                                p(tags$small("[1] American Community Survey 5-year Estimates 2014/2019")), 
+                                                                p(tags$small("[2] U.S. Census Bureau, Weldon Cooper Center for Public Service")), 
+                                                                p(tags$small("[3] U.S Census Bureau")), 
+                                                                p(tags$small("[4]  2010 Census")), 
+                                                                p(tags$small("[5] U.S. Census Bureau, OnTheMap Application and LEHD Origin-Destination Employment Statistics, 2014")), 
+                                                                p(tags$small("[6] Virginia Employment Commission, Economic Information & Analytics, Quarterly Census of Employment and Wages (QCEW), 4th Quarter (October, November, December) 2020.")), 
+                                                                p(tags$small("[7] American Community Survey 5-year Estimates 2014/2019")), 
+                                                                p(tags$small("[8]  Virginia Employment Commission")) )
+                                                         
+                                                ), 
+                                                tabPanel("Crop Layer",
+                                                         p("", style = "padding-top:10px;"),
+                                                         column(4, 
+                                                                h4(strong("Crops Grown in Powhatan County")),
+                                                                p("As residential and commercial businesses have grown in the past ten years in Floyd, there continues to be a different demographic of the new movers
+                                       into the county. The new residents share a household income that is significantly higher than those traditionally residing in Floyd 
+                                       for the past ten years, and their home values have almost doubled. Due to the recent pandemic, there was a push to move to rural areas and work
+                                       from home, resulting in home values increasing in the past two years. Many new residents are moving into Floyd for its land features, natural 
+                                       beauty, and vibrant culture of music, arts, local foods and wines, and outdoor recreation. However, these same residents work outside the county
+                                       and contribute less to the county's economy. This trend is evident when observing commuting data for Floyd County from the Virginia Employment 
+                                       Commission [6]. Floyd has roughly 60% of employees that live in Floyd, but commute out of the county for their job, only 15%, in contrast,
+                                       that commute into the county for work, leaving the remaining 25% of people who both work and live in the county [5]. ")
+                                                         ), 
+                                                         column(8, 
+                                                              h4(strong("Crop Layer Map")),
+                                                                
+                                                                #                plotlyOutput("trend1", height = "600px")
+                                                                
+                                                         ),
+                                                         column(12, 
+                                                                
+                                                                h4("References") , 
+                                                                p(tags$small("[1] American Community Survey 5-year Estimates 2014/2019")), 
+                                                                p(tags$small("[2] U.S. Census Bureau, Weldon Cooper Center for Public Service")), 
+                                                                p(tags$small("[3] U.S Census Bureau")), 
+                                                                p(tags$small("[4]  2010 Census")), 
+                                                                p(tags$small("[5] U.S. Census Bureau, OnTheMap Application and LEHD Origin-Destination Employment Statistics, 2014")), 
+                                                                p(tags$small("[6] Virginia Employment Commission, Economic Information & Analytics, Quarterly Census of Employment and Wages (QCEW), 4th Quarter (October, November, December) 2020.")), 
+                                                                p(tags$small("[7] American Community Survey 5-year Estimates 2014/2019")), 
+                                                                p(tags$small("[8]  Virginia Employment Commission")) )) ,
+                                                tabPanel("Soil Quality",
+                                                         p("", style = "padding-top:10px;"),
+                                                         column(4, 
+                                                                h4(strong("Soil Quality in Powhatan County")),
+                                                                p("As residential and commercial businesses have grown in the past ten years in Floyd, there continues to be a different demographic of the new movers
+                                       into the county. The new residents share a household income that is significantly higher than those traditionally residing in Floyd 
+                                       for the past ten years, and their home values have almost doubled. Due to the recent pandemic, there was a push to move to rural areas and work
+                                       from home, resulting in home values increasing in the past two years. Many new residents are moving into Floyd for its land features, natural 
+                                       beauty, and vibrant culture of music, arts, local foods and wines, and outdoor recreation. However, these same residents work outside the county
+                                       and contribute less to the county's economy. This trend is evident when observing commuting data for Floyd County from the Virginia Employment 
+                                       Commission [6]. Floyd has roughly 60% of employees that live in Floyd, but commute out of the county for their job, only 15%, in contrast,
+                                       that commute into the county for work, leaving the remaining 25% of people who both work and live in the county [5]. ")
+                                                         ), 
+                                                         column(8, 
+                                                                h4(strong("Soil Quality Map")),
+                                                                
+                                                                #                plotlyOutput("trend1", height = "600px")
+                                                                
+                                                         ),
+                                                         column(12, 
+                                                                
+                                                                h4("References") , 
+                                                                p(tags$small("[1] American Community Survey 5-year Estimates 2014/2019")), 
+                                                                p(tags$small("[2] U.S. Census Bureau, Weldon Cooper Center for Public Service")), 
+                                                                p(tags$small("[3] U.S Census Bureau")), 
+                                                                p(tags$small("[4]  2010 Census")), 
+                                                                p(tags$small("[5] U.S. Census Bureau, OnTheMap Application and LEHD Origin-Destination Employment Statistics, 2014")), 
+                                                                p(tags$small("[6] Virginia Employment Commission, Economic Information & Analytics, Quarterly Census of Employment and Wages (QCEW), 4th Quarter (October, November, December) 2020.")), 
+                                                                p(tags$small("[7] American Community Survey 5-year Estimates 2014/2019")), 
+                                                                p(tags$small("[8]  Virginia Employment Commission")) )) ,
+                                                tabPanel("Traffic Data",
+                                                         p("", style = "padding-top:10px;"),
+                                                         column(4, 
+                                                                h4(strong("Traffic in Powhatan County")),
+                                                                p("As residential and commercial businesses have grown in the past ten years in Floyd, there continues to be a different demographic of the new movers
+                                       into the county. The new residents share a household income that is significantly higher than those traditionally residing in Floyd 
+                                       for the past ten years, and their home values have almost doubled. Due to the recent pandemic, there was a push to move to rural areas and work
+                                       from home, resulting in home values increasing in the past two years. Many new residents are moving into Floyd for its land features, natural 
+                                       beauty, and vibrant culture of music, arts, local foods and wines, and outdoor recreation. However, these same residents work outside the county
+                                       and contribute less to the county's economy. This trend is evident when observing commuting data for Floyd County from the Virginia Employment 
+                                       Commission [6]. Floyd has roughly 60% of employees that live in Floyd, but commute out of the county for their job, only 15%, in contrast,
+                                       that commute into the county for work, leaving the remaining 25% of people who both work and live in the county [5]. ")
+                                                         ), 
+                                                         column(8, 
+                                                                h4(strong("Traffic Visualizations")),
+                                                                selectInput("econ1", "Select Variable:", width = "100%", choices = c(
+                                                                  "Traffic Volume" = "pvol",
+                                                                  "Proximity to Richmond" = "prich")
+                                                                ),
+                                                                #                plotlyOutput("trend1", height = "600px")
+                                                                
+                                                         ),
+                                                         column(12, 
+                                                                
+                                                                h4("References") , 
+                                                                p(tags$small("[1] American Community Survey 5-year Estimates 2014/2019")), 
+                                                                p(tags$small("[2] U.S. Census Bureau, Weldon Cooper Center for Public Service")), 
+                                                                p(tags$small("[3] U.S Census Bureau")), 
+                                                                p(tags$small("[4]  2010 Census")), 
+                                                                p(tags$small("[5] U.S. Census Bureau, OnTheMap Application and LEHD Origin-Destination Employment Statistics, 2014")), 
+                                                                p(tags$small("[6] Virginia Employment Commission, Economic Information & Analytics, Quarterly Census of Employment and Wages (QCEW), 4th Quarter (October, November, December) 2020.")), 
+                                                                p(tags$small("[7] American Community Survey 5-year Estimates 2014/2019")), 
+                                                                p(tags$small("[8]  Virginia Employment Commission")) ) 
+                                                )
+                                              ) 
+                                     ), 
+                            ) 
+                            
+                            
+                            
+                 ),
+                 
+                 ## Tab Parcellation --------------------------------------------
+                 
+                 navbarMenu("Parcellation" , 
+                            tabPanel("Goochland", 
+                                     fluidRow(style = "margin: 6px;",
+                                              h1(strong("Land Parcellation                 "), align = "center"),
+                                              p("", style = "padding-top:10px;"),
+                                              tabsetPanel(
+                                                tabPanel("Land Parcels",
+                                                         p("", style = "padding-top:10px;"),
+                                                         column(4, 
+                                                                h4(strong("Land Parcels in Goochland County")),
+                                                                p("As residential and commercial businesses have grown in the past ten years in Floyd, there continues to be a different demographic of the new movers
+                                       into the county. The new residents share a household income that is significantly higher than those traditionally residing in Floyd 
+                                       for the past ten years, and their home values have almost doubled. Due to the recent pandemic, there was a push to move to rural areas and work
+                                       from home, resulting in home values increasing in the past two years. Many new residents are moving into Floyd for its land features, natural 
+                                       beauty, and vibrant culture of music, arts, local foods and wines, and outdoor recreation. However, these same residents work outside the county
+                                       and contribute less to the county's economy. This trend is evident when observing commuting data for Floyd County from the Virginia Employment 
+                                       Commission [6]. Floyd has roughly 60% of employees that live in Floyd, but commute out of the county for their job, only 15%, in contrast,
+                                       that commute into the county for work, leaving the remaining 25% of people who both work and live in the county [5]. ")
+                                                         ), 
+                                                         column(8, 
+                                                                h4(strong("Land Parcellation Map")),
+                                                                
+                                                                #          plotlyOutput("trend1", height = "600px")
+                                                                
+                                                         ),
+                                                         column(12, 
+                                                                
+                                                                h4("References") , 
+                                                                p(tags$small("[1] American Community Survey 5-year Estimates 2014/2019")), 
+                                                                p(tags$small("[2] U.S. Census Bureau, Weldon Cooper Center for Public Service")), 
+                                                                p(tags$small("[3] U.S Census Bureau")), 
+                                                                p(tags$small("[4]  2010 Census")), 
+                                                                p(tags$small("[5] U.S. Census Bureau, OnTheMap Application and LEHD Origin-Destination Employment Statistics, 2014")), 
+                                                                p(tags$small("[6] Virginia Employment Commission, Economic Information & Analytics, Quarterly Census of Employment and Wages (QCEW), 4th Quarter (October, November, December) 2020.")), 
+                                                                p(tags$small("[7] American Community Survey 5-year Estimates 2014/2019")), 
+                                                                p(tags$small("[8]  Virginia Employment Commission")) )
+                                                         
+                                                ), 
+                                                
+                                                tabPanel("Parcellation Hot Spots",
+                                                         p("", style = "padding-top:10px;"),
+                                                         column(4, 
+                                                                h4(strong("Parcellation Hot Spots in Goochland County")),
+                                                                p("As residential and commercial businesses have grown in the past ten years in Floyd, there continues to be a different demographic of the new movers
+                                       into the county. The new residents share a household income that is significantly higher than those traditionally residing in Floyd 
+                                       for the past ten years, and their home values have almost doubled. Due to the recent pandemic, there was a push to move to rural areas and work
+                                       from home, resulting in home values increasing in the past two years. Many new residents are moving into Floyd for its land features, natural 
+                                       beauty, and vibrant culture of music, arts, local foods and wines, and outdoor recreation. However, these same residents work outside the county
+                                       and contribute less to the county's economy. This trend is evident when observing commuting data for Floyd County from the Virginia Employment 
+                                       Commission [6]. Floyd has roughly 60% of employees that live in Floyd, but commute out of the county for their job, only 15%, in contrast,
+                                       that commute into the county for work, leaving the remaining 25% of people who both work and live in the county [5]. ")
+                                                         ), 
+                                                         column(8, 
+                                                                h4(strong("Parcellation Hot Spot Map")),
+                                                                
+                                                                #                plotlyOutput("trend1", height = "600px")
+                                                                
+                                                         ),
+                                                         column(12, 
+                                                                
+                                                                h4("References") , 
+                                                                p(tags$small("[1] American Community Survey 5-year Estimates 2014/2019")), 
+                                                                p(tags$small("[2] U.S. Census Bureau, Weldon Cooper Center for Public Service")), 
+                                                                p(tags$small("[3] U.S Census Bureau")), 
+                                                                p(tags$small("[4]  2010 Census")), 
+                                                                p(tags$small("[5] U.S. Census Bureau, OnTheMap Application and LEHD Origin-Destination Employment Statistics, 2014")), 
+                                                                p(tags$small("[6] Virginia Employment Commission, Economic Information & Analytics, Quarterly Census of Employment and Wages (QCEW), 4th Quarter (October, November, December) 2020.")), 
+                                                                p(tags$small("[7] American Community Survey 5-year Estimates 2014/2019")), 
+                                                                p(tags$small("[8]  Virginia Employment Commission")) ) 
+                                                )
+                                              ) 
+                                     )), 
+                            tabPanel("Powhatan", 
+                                     fluidRow(style = "margin: 6px;",
+                                              h1(strong("Variables to Consider"), align = "center"),
+                                              p("", style = "padding-top:10px;"),
+                                              tabsetPanel(
+                                                tabPanel("Land Parcels",
+                                                         p("", style = "padding-top:10px;"),
+                                                         column(4, 
+                                                                h4(strong("Land Parcels in Powhatan County")),
+                                                                p("As residential and commercial businesses have grown in the past ten years in Floyd, there continues to be a different demographic of the new movers
+                                       into the county. The new residents share a household income that is significantly higher than those traditionally residing in Floyd 
+                                       for the past ten years, and their home values have almost doubled. Due to the recent pandemic, there was a push to move to rural areas and work
+                                       from home, resulting in home values increasing in the past two years. Many new residents are moving into Floyd for its land features, natural 
+                                       beauty, and vibrant culture of music, arts, local foods and wines, and outdoor recreation. However, these same residents work outside the county
+                                       and contribute less to the county's economy. This trend is evident when observing commuting data for Floyd County from the Virginia Employment 
+                                       Commission [6]. Floyd has roughly 60% of employees that live in Floyd, but commute out of the county for their job, only 15%, in contrast,
+                                       that commute into the county for work, leaving the remaining 25% of people who both work and live in the county [5]. ")
+                                                         ), 
+                                                         column(8, 
+                                                                h4(strong("Land Parcellation Map")),
+                                                                
+                                                                #          plotlyOutput("trend1", height = "600px")
+                                                                
+                                                         ),
+                                                         column(12, 
+                                                                
+                                                                h4("References") , 
+                                                                p(tags$small("[1] American Community Survey 5-year Estimates 2014/2019")), 
+                                                                p(tags$small("[2] U.S. Census Bureau, Weldon Cooper Center for Public Service")), 
+                                                                p(tags$small("[3] U.S Census Bureau")), 
+                                                                p(tags$small("[4]  2010 Census")), 
+                                                                p(tags$small("[5] U.S. Census Bureau, OnTheMap Application and LEHD Origin-Destination Employment Statistics, 2014")), 
+                                                                p(tags$small("[6] Virginia Employment Commission, Economic Information & Analytics, Quarterly Census of Employment and Wages (QCEW), 4th Quarter (October, November, December) 2020.")), 
+                                                                p(tags$small("[7] American Community Survey 5-year Estimates 2014/2019")), 
+                                                                p(tags$small("[8]  Virginia Employment Commission")) )
+                                                         
+                                                ), 
+                                                
+                                                tabPanel("Parcellation Hot Spots",
+                                                         p("", style = "padding-top:10px;"),
+                                                         column(4, 
+                                                                h4(strong("Parcellation Hot Spots in Powhatan County")),
+                                                                p("As residential and commercial businesses have grown in the past ten years in Floyd, there continues to be a different demographic of the new movers
+                                       into the county. The new residents share a household income that is significantly higher than those traditionally residing in Floyd 
+                                       for the past ten years, and their home values have almost doubled. Due to the recent pandemic, there was a push to move to rural areas and work
+                                       from home, resulting in home values increasing in the past two years. Many new residents are moving into Floyd for its land features, natural 
+                                       beauty, and vibrant culture of music, arts, local foods and wines, and outdoor recreation. However, these same residents work outside the county
+                                       and contribute less to the county's economy. This trend is evident when observing commuting data for Floyd County from the Virginia Employment 
+                                       Commission [6]. Floyd has roughly 60% of employees that live in Floyd, but commute out of the county for their job, only 15%, in contrast,
+                                       that commute into the county for work, leaving the remaining 25% of people who both work and live in the county [5]. ")
+                                                         ), 
+                                                         column(8, 
+                                                                h4(strong("Parcellation Hot Spot Map")),
+                                                                
+                                                                #                plotlyOutput("trend1", height = "600px")
+                                                                
+                                                         ),
+                                                         column(12, 
+                                                                
+                                                                h4("References") , 
+                                                                p(tags$small("[1] American Community Survey 5-year Estimates 2014/2019")), 
+                                                                p(tags$small("[2] U.S. Census Bureau, Weldon Cooper Center for Public Service")), 
+                                                                p(tags$small("[3] U.S Census Bureau")), 
+                                                                p(tags$small("[4]  2010 Census")), 
+                                                                p(tags$small("[5] U.S. Census Bureau, OnTheMap Application and LEHD Origin-Destination Employment Statistics, 2014")), 
+                                                                p(tags$small("[6] Virginia Employment Commission, Economic Information & Analytics, Quarterly Census of Employment and Wages (QCEW), 4th Quarter (October, November, December) 2020.")), 
+                                                                p(tags$small("[7] American Community Survey 5-year Estimates 2014/2019")), 
+                                                                p(tags$small("[8]  Virginia Employment Commission")) ) 
+                                                )
+                                              ) 
+                                     ), 
+                            ) 
+                            
+                            
+                            
+                 ),
+                 
+                 ## Tab Findings --------------------------------------------
+                 tabPanel("Findings & Predictions", value = "conclusion", 
                           fluidRow(style = "margin: 6px;",
-                                   h1(strong("Data and Methodology"), align = "center"),
+                                   h1(strong("Project Findings and Predictions"), align = "center"),
+                                   p("", style = "padding-top:10px;"),
+                                   p("Policy plays a key role in land-use. At every level- federal, state, and local- officials develop land use plans, with a wide 
+                                     variety of different objectives and long-term visions. These plans drive changes in land-use, and it is important to investigate 
+                                     policies at every level to get a full picture of land-use conversion."),
+                                   
+                                   column(6, 
+                                          p("", style = "padding-top:10px;"),
+                                          p(strong("The Conservation Reserve Program (CRP):")), 
+                                          p("The CRP is a federal land conversion program administered by the Farm Service Agency (FSA). 
+                                                       The goal of this program is to reduce cropland acreage- a land retirement program that pays farmers to retire some of their crop land. 
+                                                       This program has been a major driver of land retirement since it was implemented in 1985. The program is motivated by environmental 
+                                                       protection goals. To get approved for the land retirement program, your land must hit specific criteria based on targeted environmental 
+                                                       factors. There is then a bidding process. To farmers, this is an incentive to retire land. Studies show that this policy has led to farmers 
+                                                       retire their less productive land. In 2005, “CRP paid $1.7 billion to keep a land area almost the size of Iowa out of production” (source). 
+                                                       This federal land conversion program incentivizes farmers to retire their land- and lower production. The goal is to protect the environment."),
+                                          br(),
+                                          p(strong("Federal Crop Insurance Program:")),
+                                          p("This program is a partnership between the federal government and insurers- connecting the public and private sectors. 
+                                                       This program does the opposite of the CRP and raises incentives to grow crops. The goal of the Federal Crop Insurance Program is not directly to affect 
+                                                       land-use, but it does influence conversion rates. In 1993, after some catastrophic flooding, congress passed the Federal Crop Insurance Reform Act. This 
+                                                       act increased the premium subsidies for all crop insurance products- now the program includes a revenue insurance option and catastrophic coverage. About 
+                                                       60% of cultivated cropland in the Unites States is covered by the Federal Crop Insurance Program. This program raises incentives to grow crops, and could 
+                                                       influence farmers to cultivate riskier, less productive land (source)."),
+                                          br(),
+                                          p(strong("Emergency Relief Program (ERP):")), 
+                                          p("The purpose of this program is to help agriculture producers offset damage caused by natural disasters such as drought or 
+                                                     flooding (source). Funds are distributed in two phases, to aid livestock producers impacted by natural disasters. The USDA announced in May of 2022 that 
+                                                       “commodity and specialty crop producers impacted by natural disaster events in 2020 and 2021 will soon begin receiving emergency relief payments totaling 
+                                                       approximately $6 billion through the Farm Service Agency’s (FSA) new Emergency Relief Program (ERP) to offset crop yield and value losses” (source)."),
+                                          p(),
+                                          p(),
+                                          h4("References:"),
+                                          p(tags$small("[1] How Can You Help Protect Source Water? (n.d.). Retrieved July 29, 2021, from https://www.epa.gov/sourcewaterprotection/how-can-you-help-protect-source-water")), 
+                                          p(tags$small("[2] Well maintenance. (2009, April 10). Retrieved July 29, 2021, from https://www.cdc.gov/healthywater/drinking/private/wells/maintenance.html#:~:text=Wells%20should%20be%20checked%20and,example%2C%20arsenic%20and%20radon).")) ,
+                                          p(tags$small("[3] A Guide to Private Wells (pp. 5-25, Publication). (1995). Blacksburg, VA: Virginia Water Resources Research Center.")) ,
+                                          p("", style = "padding-top:10px;"),
+                                          
+                                          
+                                   ) , 
+                                   column(6, 
+                                          p("", style = "padding-top:10px;"),
+                                          p(strong("Emergency Conservation Program (ECP):")), 
+                                          p("This program “provides funding and technical assistance for farmers and ranchers to restore farmland damaged by natural disasters and for emergency water 
+                                                       conservation measures in severe droughts” (source). This program does so by giving landowners funding to install water conservation systems or to repair 
+                                                       damaged farmland. This is another example of a conservation program that gives farmers insurance, which could incentive farmers to continue to cultivate their 
+                                                       land- regardless of the potential risks associated with damage from storms and droughts. Farms are eligible for this assistance if the damage is affecting 
+                                                       productivity, there is evidence that conditions will worsen without intervention, and the repairs will be too costly without federal assistance (source). 
+                                                       Up to 75% of the costs can be provided. The FSA County Committee can “approve applications up to $125,000 while $125,001 to $250,000 requires state committee 
+                                                       approval (source)."),
+                                          br(), 
+                                          p(strong("Source Water Protection Program (SWPP):")),
+                                          p("This program is a joint project with the U.S. Department of Agriculture (USDA) Farm Service Agency (FSA) and the National Rural Water Association (NRWA), 
+                                                       a non-profit water and wastewater utility membership organization (source). It was designed with the goal of protecting surface and ground water that is 
+                                                       used as drinking water by rural residents. The NRWA employs full-time rural source water technicians that work with state and county FSA staff to make decisions 
+                                                       on where pollution prevention is needed. The SWPP works at the local level, to educate and encourage farmers to prevent source water prevention. With this program, 
+                                                       it is the local community to create and invest in a water protection plan."),
+                                          br(),
+                                          p(strong("Agriculture Risk Coverage (ARC) and Price Loss Coverage (PLC):")),
+                                          p("ARC program is an “income support program that provides payments when actual crop revenue declines below a specified guaranteed level” (source). PLC program “provides 
+                                                     income support payments when the effective price for a covered commodity falls below its effective reference price” (source). Both programs provide financial protection 
+                                                       to farmers. They serve as a safety net from drops in crop revenues and prices."),
+                                   )), 
+                          
+                          
+                          
+                 ),
+
+                 ## Tab Data Sources --------------------------------------------
+                 tabPanel("Data Sources", 
+                          fluidRow(style = "margin: 6px;",
+                                   h1(strong("Data Sources"), align = "center"),
                                    p("", style = "padding-top:10px;"),
                                    column(4,
                                           img(src = "data-acs.png", style = "display: inline; float: left;", width = "200px"),
@@ -595,9 +1038,9 @@ ui <- navbarPage(title = "DSPG 2022",
                                           h4(strong("Project Stakeholders")),
                                           img(src = "team-posadas.jpg", style = "display: inline; margin-right: 5px; border: 1px solid #C0C0C0;", width = "150px"),
                                           img(src = "team-sarah.jpg", style = "display: inline; border: 1px solid #C0C0C0;", width = "150px"),
-                                          p(a(href = "https://www.linkedin.com/in/briannaposadas/", 'Rachel ---', target = '_blank'), "(Postdoctoral Associate Department of Agricultural, Leadership, & Community Education);",
+                                          p(a(href = "https://www.linkedin.com/in/briannaposadas/", 'Rachel Henley', target = '_blank'), "(Virginia Cooperative Extension, Powhatan County);",
                                             br(), 
-                                            a(href = '', 'Nichole ---', target = '_blank'), "(Associate Professor Department of Biology Virginia State University)."),
+                                            a(href = '', 'Nichole Shuman', target = '_blank'), "(Virginia Cooperative Extension, Goochland County)."),
                                           p("", style = "padding-top:10px;")
                           )
                  )) ,
@@ -606,6 +1049,26 @@ ui <- navbarPage(title = "DSPG 2022",
 
 
 server <- function(input, output){
+  
+  goochland_soc <- reactive({
+    input$goochland_soc
+  })
+  
+  output$gsoc <- renderPlot({
+   
+    if(goochland_soc() == "gage"){
+      goochland_age
+    }
+    else if(goochland_soc() == "gind"){
+      goochland_industry
+    }
+    else if(goochland_soc() == "ginc"){
+      goochland_income
+    }
+    else{
+      goochland_education
+    }
+  })
   
 }
  
